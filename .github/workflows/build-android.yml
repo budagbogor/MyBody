@@ -32,8 +32,5 @@ jobs:
       - name: 📦 Install dependencies
         run: npm install
 
-      - name: 🧹 Clean EAS cache
-        run: eas build:clean --platform android --non-interactive
-
       - name: 🚀 Build APK
         run: eas build --platform android --profile preview --non-interactive
