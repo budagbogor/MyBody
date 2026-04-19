@@ -1,4 +1,14 @@
-# CircaLife - Technical Documentation
+# CircaLife - Technical Documentation - YourBody
+
+## AI Infrastructure
+- **Providers**: SumoPod, OpenRouter.
+- **Persistence**: AsyncStorage.
+- **Model Default**: `openrouter/free`.
+
+## Android Build Optimization (v2.0.0-AI)
+- **Environment**: Java 17 (Required for SDK 50).
+- **Hardening**: NDK v26.1.10909125 & explicit `:app:assembleRelease`.
+- **CI/CD**: GitHub Actions with `eas build:clean` step to ensure fresh builds.
 
 ## Architecture Overview
 
