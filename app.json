@@ -10,7 +10,9 @@
       "backgroundColor": "#06081A",
       "resizeMode": "contain"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.yourbody.app"
@@ -25,6 +27,12 @@
       "favicon": "./assets/favicon.png",
       "bundler": "metro"
     },
-    "description": "Rahasia Tersembunyi Tubuh Manusia — Sains Modern & Kebijaksanaan Kuno"
+    "description": "Rahasia Tersembunyi Tubuh Manusia — Sains Modern & Kebijaksanaan Kuno",
+    "extra": {
+      "eas": {
+        "projectId": "2eeabdd0-2cce-43c4-baa3-b6098eccc936"
+      }
+    },
+    "owner": "darksky99"
   }
 }
