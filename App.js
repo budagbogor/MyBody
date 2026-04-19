@@ -1878,6 +1878,10 @@ const SettingsScreen = ({ aiConfig, setAiConfig }) => {
         </TouchableOpacity>
       </View>
 
+      <Text style={[st.toolDesc, { textAlign: 'center', marginTop: 10, opacity: 0.5 }]}>
+        YourBody v2.0.0-AI (Stable)
+      </Text>
+
       <View style={[st.card, { backgroundColor: C.sl + '40' }]}>
         <Text style={st.toolTitle}>💡 Tips</Text>
         <Text style={st.toolDesc}>
