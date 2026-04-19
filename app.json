@@ -33,6 +33,9 @@
         "projectId": "2eeabdd0-2cce-43c4-baa3-b6098eccc936"
       }
     },
-    "owner": "darksky99"
+    "owner": "darksky99",
+    "plugins": [
+      "expo-font"
+    ]
   }
 }
