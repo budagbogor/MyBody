@@ -1,3 +1,5 @@
+// YourBody v2.1.0-Capacitor
+// Trigger: 1
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import {
   SafeAreaView,
