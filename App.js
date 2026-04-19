@@ -13,7 +13,10 @@ import {
   useWindowDimensions,
   Alert,
   Image,
+  TextInput,
+  Switch,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // ============================================================
 // THEME
@@ -96,6 +99,25 @@ const BREATHING_PATTERNS = {
     { label: 'Tarik Napas', duration: 5, color: C.cyan },
     { label: 'Buang Pelan', duration: 5, color: C.violet },
   ], cycles: 12, image: require('./assets/breathing_coherence.png') },
+};
+
+const AI_PROVIDERS = {
+  sumopod: {
+    name: 'SumoPod',
+    baseUrl: 'https://ai.sumopod.com/v1',
+    models: [
+      'gpt-4o-mini', 'gpt-4o', 'deepseek-chat', 'claude-3-haiku', 
+      'mimo-v2-pro', 'mimo-v2-flash', 'mimo-v2-omni'
+    ]
+  },
+  openrouter: {
+    name: 'OpenRouter',
+    baseUrl: 'https://openrouter.ai/api/v1',
+    models: [
+      'openrouter/free', 'google/gemini-2.0-flash-001', 'anthropic/claude-3-haiku', 
+      'mistralai/mistral-7b-instruct', 'meta-llama/llama-3-8b-instruct'
+    ]
+  }
 };
 
 const BODY_SCAN_STEPS = [
@@ -348,9 +370,20 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [activeScreen, setActiveScreen] = useState(null);
   const [screenParams, setScreenParams] = useState({});
+  const [aiConfig, setAiConfig] = useState({ provider: 'openrouter', model: 'openrouter/free', apiKey: '' });
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const { width: sw } = useWindowDimensions();
   const isTab = sw >= 768;
+
+  useEffect(() => {
+    const loadConfig = async () => {
+      try {
+        const saved = await AsyncStorage.getItem('yourbody_ai_config');
+        if (saved) setAiConfig(JSON.parse(saved));
+      } catch (e) {}
+    };
+    loadConfig();
+  }, []);
 
   const navigate = useCallback((screen, params = {}) => {
     fadeAnim.setValue(0);
@@ -392,6 +425,7 @@ export default function App() {
       case 'practice': return <PracticeScreen navigate={navigate} isTab={isTab} sw={sw} />;
       case 'discover': return <DiscoverScreen navigate={navigate} isTab={isTab} sw={sw} />;
       case 'wisdom': return <WisdomScreen navigate={navigate} isTab={isTab} sw={sw} />;
+      case 'settings': return <SettingsScreen aiConfig={aiConfig} setAiConfig={setAiConfig} />;
       default: return <HomeScreen navigate={navigate} isTab={isTab} sw={sw} />;
     }
   };
@@ -1734,12 +1768,135 @@ const HeroImage = ({ source, height = 180 }) => (
   </View>
 );
 
+const SettingsScreen = ({ aiConfig, setAiConfig }) => {
+  const [provider, setProvider] = useState(aiConfig.provider || 'openrouter');
+  const [model, setModel] = useState(aiConfig.model || 'openrouter/free');
+  const [apiKey, setApiKey] = useState(aiConfig.apiKey || '');
+  const [testing, setTesting] = useState(false);
+
+  const handleSave = async () => {
+    const newConfig = { provider, model, apiKey };
+    try {
+      await AsyncStorage.setItem('yourbody_ai_config', JSON.stringify(newConfig));
+      setAiConfig(newConfig);
+      Alert.alert('Sukses', 'Pengaturan AI berhasil disimpan.');
+    } catch (e) {
+      Alert.alert('Error', 'Gagal menyimpan pengaturan.');
+    }
+  };
+
+  const testConnection = async () => {
+    if (!apiKey) return Alert.alert('Peringatan', 'Masukkan API Key terlebih dahulu.');
+    setTesting(true);
+    try {
+      const config = AI_PROVIDERS[provider];
+      const response = await fetch(`${config.baseUrl}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://yourbody.app',
+          'X-Title': 'YourBody Health App'
+        },
+        body: JSON.stringify({
+          model: model,
+          messages: [{ role: 'user', content: 'Hi' }],
+          max_tokens: 5
+        })
+      });
+      
+      if (response.ok) {
+        Alert.alert('Koneksi Berhasil', 'Otak AI terhubung dengan lancar!');
+      } else {
+        const errorData = await response.json();
+        Alert.alert('Koneksi Gagal', errorData.error?.message || 'Cek kembali API Key Anda.');
+      }
+    } catch (e) {
+      Alert.alert('Error', 'Terjadi kesalahan jaringan.');
+    } finally {
+      setTesting(false);
+    }
+  };
+
+  return (
+    <ScrollView style={st.screen} contentContainerStyle={{ paddingBottom: 100 }}>
+      <Text style={st.screenTitle}>⚙️ Pengaturan AI</Text>
+      <Text style={st.screenSub}>Hubungkan "Otak AI" untuk fitur konsultasi kesehatan personal.</Text>
+
+      <View style={st.card}>
+        <Text style={st.label}>AI Provider</Text>
+        <View style={st.btnGroup}>
+          {Object.keys(AI_PROVIDERS).map(p => (
+            <TouchableOpacity 
+              key={p} 
+              style={[st.choiceBtn, provider === p && st.choiceBtnActive]}
+              onPress={() => {
+                setProvider(p);
+                setModel(AI_PROVIDERS[p].models[0]);
+              }}
+            >
+              <Text style={[st.choiceBtnText, provider === p && st.choiceBtnTextActive]}>
+                {AI_PROVIDERS[p].name}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        <Text style={[st.label, { marginTop: 20 }]}>Pilih Model</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 10 }}>
+          {AI_PROVIDERS[provider].models.map(m => (
+            <TouchableOpacity 
+              key={m} 
+              style={[st.modelBadge, model === m && st.modelBadgeActive]}
+              onPress={() => setModel(m)}
+            >
+              <Text style={[st.modelBadgeText, model === m && st.modelBadgeTextActive]}>{m}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+
+        <Text style={[st.label, { marginTop: 10 }]}>API Key</Text>
+        <TextInput 
+          style={st.input}
+          placeholder="sk-..."
+          placeholderTextColor={C.t3}
+          value={apiKey}
+          onChangeText={setApiKey}
+          secureTextEntry
+        />
+
+        <TouchableOpacity 
+          style={[st.testBtn, testing && { opacity: 0.6 }]} 
+          onPress={testConnection}
+          disabled={testing}
+        >
+          <Text style={st.testBtnText}>{testing ? 'Mengetes...' : '⚡ Test Koneksi AI'}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={st.saveBtn} onPress={handleSave}>
+          <Text style={st.saveBtnText}>💾 Simpan Pengaturan</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={[st.card, { backgroundColor: C.sl + '40' }]}>
+        <Text style={st.toolTitle}>💡 Tips</Text>
+        <Text style={st.toolDesc}>
+          • Gunakan OpenRouter untuk akses model gratis (openrouter/free).{"\n"}
+          • AI Key Anda disimpan aman secara lokal di HP ini.{"\n"}
+          • Setelah terhubung, YourBody akan memiliki "kesadaran" untuk membimbing sesi Anda.
+        </Text>
+      </View>
+    </ScrollView>
+  );
+};
+
 const BottomNav = ({ activeTab, setActiveTab }) => {
   const tabs = [
     { id: 'home', icon: '🏠', label: 'Sekarang' },
     { id: 'practice', icon: '🛠️', label: 'Praktik' },
     { id: 'discover', icon: '🔬', label: 'Temukan' },
     { id: 'wisdom', icon: '💎', label: 'Wisdom' },
+    { id: 'settings', icon: '⚙️', label: 'Settings' },
   ];
   return (
     <View style={st.bottomNav}>
@@ -1920,4 +2077,21 @@ const st = StyleSheet.create({
 
   // SEFT
   seftCard: { width: '100%', backgroundColor: C.s, borderRadius: 20, padding: 24, alignItems: 'center', marginTop: 12 },
+
+  // Settings
+  label: { fontSize: 13, color: C.t2, fontWeight: '700', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 1 },
+  btnGroup: { flexDirection: 'row', gap: 10 },
+  choiceBtn: { flex: 1, paddingVertical: 12, borderRadius: 12, backgroundColor: C.sl, alignItems: 'center', borderWidth: 1, borderColor: C.b },
+  choiceBtnActive: { backgroundColor: C.cyan, borderColor: C.cyan },
+  choiceBtnText: { fontSize: 14, fontWeight: '700', color: C.t2 },
+  choiceBtnTextActive: { color: C.bg },
+  modelBadge: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, backgroundColor: C.sl, marginRight: 8, borderWidth: 1, borderColor: C.b },
+  modelBadgeActive: { backgroundColor: C.cyan + '20', borderColor: C.cyan },
+  modelBadgeText: { fontSize: 13, color: C.t2, fontWeight: '600' },
+  modelBadgeTextActive: { color: C.cyan },
+  input: { backgroundColor: C.bg, borderRadius: 12, padding: 14, color: C.t1, fontSize: 14, marginBottom: 20, borderWidth: 1, borderColor: C.b },
+  testBtn: { paddingVertical: 14, borderRadius: 14, backgroundColor: C.sl, alignItems: 'center', marginBottom: 12 },
+  testBtnText: { color: C.cyan, fontWeight: '700', fontSize: 14 },
+  saveBtn: { paddingVertical: 16, borderRadius: 16, backgroundColor: C.cyan, alignItems: 'center' },
+  saveBtnText: { color: C.bg, fontWeight: '800', fontSize: 15 },
 });
