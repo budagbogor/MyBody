@@ -1790,6 +1790,7 @@ const SettingsScreen = ({ aiConfig, setAiConfig }) => {
   const testConnection = async () => {
     if (!apiKey) return Alert.alert('Peringatan', 'Masukkan API Key terlebih dahulu.');
     setTesting(true);
+    setTestStatus(null);
     try {
       const config = AI_PROVIDERS[provider];
       const response = await fetch(`${config.baseUrl}/chat/completions`, {
@@ -1808,17 +1809,21 @@ const SettingsScreen = ({ aiConfig, setAiConfig }) => {
       });
       
       if (response.ok) {
-        Alert.alert('Koneksi Berhasil', 'Otak AI terhubung dengan lancar!');
+        setTestStatus('success');
       } else {
+        setTestStatus('error');
         const errorData = await response.json();
         Alert.alert('Koneksi Gagal', errorData.error?.message || 'Cek kembali API Key Anda.');
       }
     } catch (e) {
+      setTestStatus('error');
       Alert.alert('Error', 'Terjadi kesalahan jaringan.');
     } finally {
       setTesting(false);
     }
   };
+
+  const [testStatus, setTestStatus] = useState(null);
 
   return (
     <ScrollView style={st.screen} contentContainerStyle={{ paddingBottom: 100 }}>
@@ -2096,7 +2101,9 @@ const st = StyleSheet.create({
   modelBadgeText: { fontSize: 13, color: C.t2, fontWeight: '600' },
   modelBadgeTextActive: { color: C.cyan },
   input: { backgroundColor: C.bg, borderRadius: 12, padding: 14, color: C.t1, fontSize: 14, marginBottom: 20, borderWidth: 1, borderColor: C.b },
-  testBtn: { paddingVertical: 14, borderRadius: 14, backgroundColor: C.sl, alignItems: 'center', marginBottom: 12 },
+  testBtn: { paddingVertical: 14, borderRadius: 14, backgroundColor: C.sl, alignItems: 'center', marginBottom: 12, borderWidth: 1, borderColor: 'transparent' },
+  testBtnSuccess: { borderColor: '#00ff88', backgroundColor: '#00ff8810' },
+  testBtnError: { borderColor: '#ff4b2b', backgroundColor: '#ff4b2b10' },
   testBtnText: { color: C.cyan, fontWeight: '700', fontSize: 14 },
   saveBtn: { paddingVertical: 16, borderRadius: 16, backgroundColor: C.cyan, alignItems: 'center' },
   saveBtnText: { color: C.bg, fontWeight: '800', fontSize: 15 },
