@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "YourBody",
+    "slug": "yourbody",
+    "version": "2.0.0",
+    "orientation": "default",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "backgroundColor": "#06081A",
+      "resizeMode": "contain"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourbody.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#06081A"
+      },
+      "package": "com.yourbody.app"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "description": "Rahasia Tersembunyi Tubuh Manusia — Sains Modern & Kebijaksanaan Kuno"
+  }
+}
