@@ -17,6 +17,8 @@ import {
   Image,
   TextInput,
   Switch,
+  BackHandler,
+  ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -123,38 +125,38 @@ const AI_PROVIDERS = {
 };
 
 const BODY_SCAN_STEPS = [
-  { area: 'Kaki & Telapak Kaki', instruction: 'Rasakan berat kaki di lantai. Rilekskan setiap jari. Rasakan energi bumi naik melalui telapak kaki.', duration: 45 },
-  { area: 'Betis & Lutut', instruction: 'Lepaskan ketegangan di betis. Biarkan lutut rileks. Rasakan darah mengalir bebas.', duration: 30 },
-  { area: 'Paha & Pinggul', instruction: 'Area psoas — tempat trauma tersimpan. Tarik napas dalam, bayangkan rileksasi mengalir ke pinggul.', duration: 45 },
-  { area: 'Perut & Solar Plexus', instruction: 'Pusat "gut feeling" Anda. Rasakan perut mengembang & mengempis. Lepaskan kecemasan.', duration: 45 },
-  { area: 'Dada & Jantung', instruction: 'Rasakan detak jantung. Bayangkan cahaya hijau hangat di dada. Biarkan kasih sayang mengalir.', duration: 45 },
-  { area: 'Bahu & Lengan', instruction: 'Turunkan bahu jauh dari telinga. Rilekskan lengan hingga ujung jari. Lepaskan beban.', duration: 30 },
-  { area: 'Leher & Tenggorokan', instruction: 'Area komunikasi. Rilekskan rahang. Biarkan lidah turun dari langit mulut.', duration: 30 },
-  { area: 'Wajah & Kepala', instruction: 'Rilekskan dahi, mata, pipi, rahang. Bayangkan cahaya putih di kelenjar pineal (pusat kepala).', duration: 45 },
-  { area: 'Seluruh Tubuh', instruction: 'Rasakan seluruh tubuh sebagai satu kesatuan cahaya. Anda utuh, aman, dan hidup.', duration: 45 },
+  { area: 'Kaki & Telapak Kaki', instruction: 'Rasakan berat kaki di lantai. Rilekskan setiap jari. Rasakan energi bumi naik melalui telapak kaki.', duration: 45, image: require('./assets/body_scan_feet.png'), posisi: 'Berbaring Rileks' },
+  { area: 'Betis & Lutut', instruction: 'Lepaskan ketegangan di betis. Biarkan lutut rileks. Rasakan darah mengalir bebas.', duration: 30, image: require('./assets/body_scan_calves.png'), posisi: 'Berbaring Rileks' },
+  { area: 'Paha & Pinggul', instruction: 'Area psoas — tempat trauma tersimpan. Tarik napas dalam, bayangkan rileksasi mengalir ke pinggul.', duration: 45, image: require('./assets/body_scan_hips.png'), posisi: 'Berbaring Rileks' },
+  { area: 'Perut & Solar Plexus', instruction: 'Pusat "gut feeling" Anda. Rasakan perut mengembang & mengempis. Lepaskan kecemasan.', duration: 45, image: require('./assets/body_scan_gut.png'), posisi: 'Berbaring Rileks' },
+  { area: 'Dada & Jantung', instruction: 'Rasakan detak jantung. Bayangkan cahaya hijau hangat di dada. Biarkan kasih sayang mengalir.', duration: 45, image: require('./assets/body_scan_heart.png'), posisi: 'Berbaring Rileks' },
+  { area: 'Bahu & Lengan', instruction: 'Turunkan bahu jauh dari telinga. Rilekskan lengan hingga ujung jari. Lepaskan beban.', duration: 30, image: require('./assets/body_scan_shoulders.png'), posisi: 'Berbaring Rileks' },
+  { area: 'Leher & Tenggorokan', instruction: 'Area komunikasi. Rilekskan rahang. Biarkan lidah turun dari langit mulut.', duration: 30, image: require('./assets/body_scan_neck.png'), posisi: 'Berbaring Rileks' },
+  { area: 'Wajah & Kepala', instruction: 'Rilekskan dahi, mata, pipi, rahang. Bayangkan cahaya putih di kelenjar pineal (pusat kepala).', duration: 45, image: require('./assets/body_scan_face.png'), posisi: 'Berbaring Rileks' },
+  { area: 'Seluruh Tubuh', instruction: 'Rasakan seluruh tubuh sebagai satu kesatuan cahaya. Anda utuh, aman, dan hidup.', duration: 45, image: require('./assets/body_scan_fullbody.png'), posisi: 'Berbaring Rileks' },
 ];
 
 const STRETCH_ROUTINES = {
-  'morning-stretch': { name: 'Stretch Pagi (5 min)', image: require('./assets/yoga_banner.png'), steps: [
-    { name: 'Cat-Cow', instruction: 'Posisi merangkak. Tarik napas: lengkungkan punggung ke bawah. Buang: bulatkan punggung ke atas. Gerak mengalir.', duration: 45 },
-    { name: 'Child Pose', instruction: 'Duduk ke tumit, tangan lurus ke depan di lantai. Bernapas dalam. Rasakan peregangan di punggung.', duration: 30 },
-    { name: 'Downward Dog', instruction: 'Angkat pinggul tinggi, tekan tumit ke lantai. Kaki selebar bahu. Tahan & bernapas.', duration: 30 },
-    { name: 'Forward Fold', instruction: 'Berdiri, lipat badan ke depan dari pinggul. Biarkan kepala menggantung. Rilekskan leher.', duration: 30 },
-    { name: 'Spinal Twist', instruction: 'Berbaring, tekuk satu lutut ke sisi sebelah. Tangan terbuka. Tahan 20 detik per sisi.', duration: 40 },
-    { name: 'Neck Circles', instruction: 'Putar kepala perlahan searah jarum jam 5x, lalu berlawanan 5x. Pelan dan mindful.', duration: 30 },
+  'morning-stretch': { name: 'Stretch Pagi (5 min)', image: require('./assets/yoga_banner_premium.png'), steps: [
+    { name: 'Cat-Cow', instruction: 'Posisi merangkak. Tarik napas: lengkungkan punggung ke bawah. Buang: bulatkan punggung ke atas. Gerak mengalir.', duration: 45, image: require('./assets/pose_cat_cow.png') },
+    { name: 'Child Pose', instruction: 'Duduk ke tumit, tangan lurus ke depan di lantai. Bernapas dalam. Rasakan peregangan di punggung.', duration: 30, image: require('./assets/pose_child_pose.png') },
+    { name: 'Downward Dog', instruction: 'Angkat pinggul tinggi, tekan tumit ke lantai. Kaki selebar bahu. Tahan & bernapas.', duration: 30, image: require('./assets/pose_downward_dog.png') },
+    { name: 'Forward Fold', instruction: 'Berdiri, lipat badan ke depan dari pinggul. Biarkan kepala menggantung. Rilekskan leher.', duration: 30, image: require('./assets/pose_forward_fold.png') },
+    { name: 'Spinal Twist', instruction: 'Berbaring, tekuk satu lutut ke sisi sebelah. Tangan terbuka. Tahan 20 detik per sisi.', duration: 40, image: require('./assets/pose_spinal_twist.png') },
+    { name: 'Neck Circles', instruction: 'Putar kepala perlahan searah jarum jam 5x, lalu berlawanan 5x. Pelan dan mindful.', duration: 30, image: require('./assets/pose_neck_circles.png') },
   ]},
-  'evening-yoga': { name: 'Yoga Malam (10 min)', image: require('./assets/yoga_banner.png'), steps: [
-    { name: 'Legs Up The Wall', instruction: 'Berbaring, kedua kaki naik ke dinding. Tangan di samping. Bernapas pelan 2 menit.', duration: 120 },
-    { name: 'Supine Twist', instruction: 'Berbaring, tekuk lutut ke satu sisi. Rasakan pelepasan di punggung bawah. 1 menit per sisi.', duration: 120 },
-    { name: 'Happy Baby', instruction: 'Berbaring, pegang telapak kaki dari dalam. Goyangkan pelan. Buka pinggul.', duration: 60 },
-    { name: 'Pigeon Pose', instruction: 'Satu kaki ke depan tertekuk, satu ke belakang lurus. Turunkan badan. 1 menit per sisi.', duration: 120 },
-    { name: 'Savasana', instruction: 'Berbaring total. Lepaskan semua usaha. Serahkan berat tubuh ke lantai. Hanya bernapas.', duration: 120 },
+  'evening-yoga': { name: 'Yoga Malam (10 min)', image: require('./assets/yoga_banner_premium.png'), steps: [
+    { name: 'Legs Up The Wall', instruction: 'Berbaring, kedua kaki naik ke dinding. Tangan di samping. Bernapas pelan 2 menit.', duration: 120, image: require('./assets/pose_legs_up_wall.png') },
+    { name: 'Supine Twist', instruction: 'Berbaring, tekuk lutut ke satu sisi. Rasakan pelepasan di punggung bawah. 1 menit per sisi.', duration: 120, image: require('./assets/pose_supine_twist.png') },
+    { name: 'Happy Baby', instruction: 'Berbaring, pegang telapak kaki dari dalam. Goyangkan pelan. Buka pinggul.', duration: 60, image: require('./assets/pose_happy_baby.png') },
+    { name: 'Pigeon Pose', instruction: 'Satu kaki ke depan tertekuk, satu ke belakang lurus. Turunkan badan. 1 menit per sisi.', duration: 120, image: require('./assets/pose_pigeon_pose.png') },
+    { name: 'Savasana', instruction: 'Berbaring total. Lepaskan semua usaha. Serahkan berat tubuh ke lantai. Hanya bernapas.', duration: 120, image: require('./assets/pose_savasana.png') },
   ]},
-  'fascia-release': { name: 'Fascia Release (8 min)', image: require('./assets/yoga_banner.png'), steps: [
-    { name: 'Jaw Release', instruction: 'Buka mulut lebar, gerakkan rahang ke kiri-kanan. Pijat sendi rahang melingkar, 30 detik per sisi.', duration: 60 },
-    { name: 'Neck Fascia', instruction: 'Miringkan kepala ke satu sisi, tahan 30 detik. Tangan sisi lain menggantung untuk menambah tarikan. Kedua sisi.', duration: 60 },
-    { name: 'Shoulder Rolls', instruction: 'Putar bahu perlahan ke belakang 10x, ke depan 10x. Besar dan lambat.', duration: 45 },
-    { name: 'Thoracic Opener', instruction: 'Tangan di belakang kepala, siku terbuka. Tarik napas & buka dada. Buang & tutup siku. 10x.', duration: 60 },
+  'fascia-release': { name: 'Fascia Release (8 min)', image: require('./assets/yoga_banner_premium.png'), steps: [
+    { name: 'Jaw Release', instruction: 'Buka mulut lebar, gerakkan rahang ke kiri-kanan. Pijat sendi rahang melingkar, 30 detik per sisi.', duration: 60, image: require('./assets/pose_jaw_release.png') },
+    { name: 'Neck Fascia', instruction: 'Miringkan kepala ke satu sisi, tahan 30 detik. Tangan sisi lain menggantung untuk menambah tarikan. Kedua sisi.', duration: 60, image: require('./assets/pose_neck_fascia.png') },
+    { name: 'Shoulder Rolls', instruction: 'Putar bahu perlahan ke belakang 10x, ke depan 10x. Besar dan lambat.', duration: 45, image: require('./assets/pose_shoulder_rolls.png') },
+    { name: 'Thoracic Opener', instruction: 'Tangan di belakang kepala, siku terbuka. Tarik napas & buka dada. Buang & tutup siku. 10x.', duration: 60, image: require('./assets/pose_thoracic_opener.png') },
     { name: 'Hip Circles', instruction: 'Berdiri, putar pinggul melingkar besar. 10x per arah. Minyaki sendi pinggul.', duration: 45 },
     { name: 'Psoas Release', instruction: 'Berbaring, lutut ditekuk, kaki di lantai. Biarkan lutut jatuh perlahan ke satu sisi. 45 detik per sisi.', duration: 90 },
     { name: 'Foot Roll', instruction: 'Pijak bola tenis. Gulingkan di bawah telapak kaki pelan. 30 detik per kaki.', duration: 60 },
@@ -162,17 +164,17 @@ const STRETCH_ROUTINES = {
 };
 
 const ACUPRESSURE_POINTS = [
-  { id: 'li4', name: 'Hegu (LI4)', location: 'Antara ibu jari & telunjuk, di otot', benefit: 'Sakit kepala, stres, imunitas, nyeri gigi', instruction: 'Tekan kuat dengan ibu jari tangan lain. Pijat melingkar. Bernapas dalam.', duration: 120, icon: '✋' },
-  { id: 'pc6', name: 'Neiguan (PC6)', location: '3 jari di atas pergelangan dalam', benefit: 'Mual, kecemasan, jantung, insomnia', instruction: 'Tekan dengan 2 jari. Tekanan sedang. Bernapas lambat. Rasakan ketenangan.', duration: 120, icon: '🤚' },
-  { id: 'st36', name: 'Zusanli (ST36)', location: '4 jari di bawah lutut, sisi luar tulang kering', benefit: 'Energi, pencernaan, imunitas, anti-aging', instruction: 'Titik "longevity" paling terkenal. Tekan kuat, pijat melingkar. Hangat di area = berhasil.', duration: 120, icon: '🦵' },
-  { id: 'gv20', name: 'Baihui (GV20)', location: 'Puncak kepala (garis tengah)', benefit: 'Fokus, clarity mental, ketenangan, headache', instruction: 'Tekan ringan dengan ujung jari. Bayangkan energi naik dari tulang belakang ke titik ini.', duration: 90, icon: '👆' },
-  { id: 'yin', name: 'Yintang (EX-HN3)', location: 'Titik tepat antara kedua alis', benefit: 'Insomnia, kecemasan, aktivasi pineal', instruction: 'Tekan ringan dengan jari tengah. Tutup mata. Fokuskan perhatian ke titik ini. Bernapas pelan.', duration: 120, icon: '🔮' },
-  { id: 'kd1', name: 'Yongquan (KD1)', location: 'Cekungan di telapak kaki depan', benefit: 'Grounding, insomnia, hipertensi, kecemasan', instruction: 'Pijat kuat dengan ibu jari. Melingkar. Ini titik "grounding" — koneksi bumi.', duration: 90, icon: '🦶' },
-  { id: 'gb20', name: 'Fengchi (GB20)', location: 'Dasar tengkorak, cekungan di kedua sisi leher', benefit: 'Migrain, kaku leher, flu, vertigo, mata lelah', instruction: 'Tekan kedua titik dengan ibu jari, jari lain merangkul kepala. Tekan ke atas & ke dalam. Tahan 2 menit.', duration: 120, icon: '🧠' },
-  { id: 'gb21', name: 'Jianjing (GB21)', location: 'Tengah antara leher & ujung bahu', benefit: 'Nyeri bahu, leher kaku, sakit kepala tegang, stres', instruction: 'Cubit/tekan otot trapezius dengan ibu jari & telunjuk. Tahan kuat. JANGAN pada ibu hamil!', duration: 90, icon: '💪' },
-  { id: 'lv3', name: 'Taichong (LV3)', location: 'Punggung kaki, antara tulang jari 1 & 2', benefit: 'Hipertensi, stres, sakit kepala, insomnia, mata merah', instruction: 'Tekan kuat di cekungan antara tulang. Pijat melingkar. Titik "Great Rushing" untuk meredakan hati.', duration: 120, icon: '🦶' },
-  { id: 'sp6', name: 'Sanyinjiao (SP6)', location: '4 jari di atas mata kaki dalam, belakang tulang kering', benefit: 'Nyeri haid, hormonal, pencernaan, insomnia, fertilitas', instruction: 'Tekan kuat di belakang tulang kering. Pijat melingkar. Titik pertemuan 3 meridian Yin. JANGAN pada ibu hamil!', duration: 120, icon: '🦵' },
-  { id: 'ht7', name: 'Shenmen (HT7)', location: 'Sisi kelingking pergelangan tangan, di lipatan', benefit: 'Insomnia, kecemasan, palpitasi, stres emosional', instruction: 'Tekan ringan dengan ibu jari. Rasakan denyut. Ini "Gerbang Roh" — titik penenang jiwa. Bernapas pelan.', duration: 120, icon: '✋' },
+  { id: 'li4', name: 'Hegu (LI4)', location: 'Antara ibu jari & telunjuk, di otot', benefit: 'Sakit kepala, stres, imunitas, nyeri gigi', instruction: 'Tekan kuat dengan ibu jari tangan lain. Pijat melingkar. Bernapas dalam.', duration: 120, icon: '✋', macroImage: require('./assets/acu_li4_hegu_macro.png') },
+  { id: 'pc6', name: 'Neiguan (PC6)', location: '3 jari di atas pergelangan dalam', benefit: 'Mual, kecemasan, jantung, insomnia', instruction: 'Tekan dengan 2 jari. Tekanan sedang. Bernapas lambat. Rasakan ketenangan.', duration: 120, icon: '🤚', macroImage: require('./assets/acu_pc6_neiguan_macro.png') },
+  { id: 'st36', name: 'Zusanli (ST36)', location: '4 jari di bawah lutut, sisi luar tulang kering', benefit: 'Energi, pencernaan, imunitas, anti-aging', instruction: 'Titik "longevity" paling terkenal. Tekan kuat, pijat melingkar. Hangat di area = berhasil.', duration: 120, icon: '🦵', macroImage: require('./assets/acu_st36_zusanli_macro.png') },
+  { id: 'gv20', name: 'Baihui (GV20)', location: 'Puncak kepala (garis tengah)', benefit: 'Fokus, clarity mental, ketenangan, headache', instruction: 'Tekan ringan dengan ujung jari. Bayangkan energi naik dari tulang belakang ke titik ini.', duration: 90, icon: '👆', macroImage: require('./assets/acu_gv20_baihui_macro.png') },
+  { id: 'yin', name: 'Yintang (EX-HN3)', location: 'Titik tepat antara kedua alis', benefit: 'Insomnia, kecemasan, aktivasi pineal', instruction: 'Tekan ringan dengan jari tengah. Tutup mata. Fokuskan perhatian ke titik ini. Bernapas pelan.', duration: 120, icon: '🔮', macroImage: require('./assets/acu_yintang_macro_zoomed.png') },
+  { id: 'kd1', name: 'Yongquan (KD1)', location: 'Cekungan di telapak kaki depan', benefit: 'Grounding, insomnia, hipertensi, kecemasan', instruction: 'Pijat kuat dengan ibu jari. Melingkar. Ini titik "grounding" — koneksi bumi.', duration: 90, icon: '🦶', macroImage: require('./assets/acu_kd1_yongquan_macro.png') },
+  { id: 'gb20', name: 'Fengchi (GB20)', location: 'Dasar tengkorak, cekungan di kedua sisi leher', benefit: 'Migrain, kaku leher, flu, vertigo, mata lelah', instruction: 'Tekan kedua titik dengan ibu jari, jari lain merangkul kepala. Tekan ke atas & ke dalam. Tahan 2 menit.', duration: 120, icon: '🧠', macroImage: require('./assets/acu_gb20_fengchi_macro.png') },
+  { id: 'gb21', name: 'Jianjing (GB21)', location: 'Tengah antara leher & ujung bahu', benefit: 'Nyeri bahu, leher kaku, sakit kepala tegang, stres', instruction: 'Cubit/tekan otot trapezius dengan ibu jari & telunjuk. Tahan kuat. JANGAN pada ibu hamil!', duration: 90, icon: '💪', macroImage: require('./assets/acu_gb21_jianjing_macro.png') },
+  { id: 'lv3', name: 'Taichong (LV3)', location: 'Punggung kaki, antara tulang jari 1 & 2', benefit: 'Hipertensi, stres, sakit kepala, insomnia, mata merah', instruction: 'Tekan kuat di cekungan antara tulang. Pijat melingkar. Titik "Great Rushing" untuk meredakan hati.', duration: 120, icon: '🦶', macroImage: require('./assets/acu_lv3_taichong_macro.png') },
+  { id: 'sp6', name: 'Sanyinjiao (SP6)', location: '4 jari di atas mata kaki dalam, belakang tulang kering', benefit: 'Nyeri haid, hormonal, pencernaan, insomnia, fertilitas', instruction: 'Tekan kuat di belakang tulang kering. Pijat melingkar. Titik pertemuan 3 meridian Yin. JANGAN pada ibu hamil!', duration: 120, icon: '🦵', macroImage: require('./assets/acu_sp6_sanyinjiao_macro.png') },
+  { id: 'ht7', name: 'Shenmen (HT7)', location: 'Sisi kelingking pergelangan tangan, di lipatan', benefit: 'Insomnia, kecemasan, palpitasi, stres emosional', instruction: 'Tekan ringan dengan ibu jari. Rasakan denyut. Ini "Gerbang Roh" — titik penenang jiwa. Bernapas pelan.', duration: 120, icon: '✋', macroImage: require('./assets/acu_ht7_shenmen_macro.png') },
   { id: 'lu7', name: 'Lieque (LU7)', location: '2 jari di atas pergelangan, sisi ibu jari', benefit: 'Batuk, asma, sesak, flu, sakit tenggorokan, sakit kepala', instruction: 'Tekan di cekungan tulang radius. Pijat melingkar. Titik komando untuk kepala & leher.', duration: 90, icon: '🤚' },
 ];
 
@@ -181,24 +183,24 @@ const ACUPRESSURE_POINTS = [
 // ============================================================
 
 const SEFT_TAPPING_POINTS = [
-  { id: 1, name: 'Crown (CR)', location: 'Puncak kepala — ubun-ubun', instruction: 'Ketuk ringan di puncak kepala dengan 4 jari.', icon: '👆' },
-  { id: 2, name: 'Eyebrow (EB)', location: 'Pangkal alis mata (dekat hidung)', instruction: 'Ketuk di awal alis, di atas tulang orbital.', icon: '👁️' },
-  { id: 3, name: 'Side of Eye (SE)', location: 'Tulang di samping luar mata', instruction: 'Ketuk di tulang samping mata, bukan di pelipis.', icon: '👁️' },
-  { id: 4, name: 'Under Eye (UE)', location: '2 cm di bawah mata, di tulang pipi', instruction: 'Ketuk di tulang di bawah mata, lurus dari pupil.', icon: '👁️' },
-  { id: 5, name: 'Under Nose (UN)', location: 'Antara hidung dan bibir atas', instruction: 'Ketuk di titik tengah antara hidung dan bibir atas.', icon: '👃' },
-  { id: 6, name: 'Chin (CH)', location: 'Lekukan antara dagu dan bibir bawah', instruction: 'Ketuk di cekungan di bawah bibir bawah.', icon: '👄' },
-  { id: 7, name: 'Collarbone (CB)', location: 'Pertemuan tulang dada, selangka & rusuk pertama', instruction: 'Ketuk di titik pertemuan tulang dada & selangka, agak ke bawah.', icon: '🦴' },
-  { id: 8, name: 'Under Arm (UA)', location: '10 cm di bawah ketiak (±setinggi puting pada pria)', instruction: 'Ketuk di sisi badan, sekitar 10 cm di bawah ketiak.', icon: '💪' },
-  { id: 9, name: 'Gamut Spot', location: 'Punggung tangan, antara tulang jari manis & kelingking', instruction: 'Ketuk terus-menerus di titik ini selama 9 Gamut Procedure.', icon: '✊' },
-  { id: 10, name: 'Inside Hand (IH)', location: 'Bagian dalam tangan / telapak tangan', instruction: 'Ketuk di bagian tengah telapak tangan.', icon: '🤲' },
-  { id: 11, name: 'Thumb (TH)', location: 'Sisi luar kuku ibu jari', instruction: 'Ketuk di samping kuku ibu jari, sisi yang menghadap telunjuk.', icon: '👍' },
-  { id: 12, name: 'Index Finger (IF)', location: 'Sisi luar kuku telunjuk', instruction: 'Ketuk di samping kuku telunjuk, sisi menghadap ibu jari.', icon: '☝️' },
-  { id: 13, name: 'Middle Finger (MF)', location: 'Sisi luar kuku jari tengah', instruction: 'Ketuk di samping kuku jari tengah.', icon: '🖐️' },
-  { id: 14, name: 'Ring Finger (RF)', location: 'Sisi luar kuku jari manis', instruction: 'Ketuk di samping kuku jari manis.', icon: '🖐️' },
-  { id: 15, name: 'Baby Finger (BF)', location: 'Sisi luar kuku kelingking', instruction: 'Ketuk di samping kuku kelingking.', icon: '🖐️' },
-  { id: 16, name: 'Karate Chop (KC)', location: 'Sisi luar telapak tangan (untuk memotong)', instruction: 'Ketuk sisi telapak tangan yang digunakan untuk karate chop.', icon: '🤚' },
-  { id: 17, name: 'Sore Spot', location: 'Dada atas kiri/kanan yang terasa nyeri jika ditekan', instruction: 'Usap melingkar (bukan ketuk) di area ini sambil ucapkan set-up.', icon: '💗' },
-  { id: 18, name: 'Liver Point (LP)', location: 'Di bawah dada kanan, 2 rusuk di bawah puting', instruction: 'Ketuk ringan di area ini.', icon: '🫁' },
+  { id: 1, name: 'Crown (CR)', location: 'Puncak kepala — ubun-ubun', instruction: 'Ketuk ringan di puncak kepala dengan 4 jari.', icon: '👆', macroImage: require('./assets/seft_crown_macro_zoomed.png') },
+  { id: 2, name: 'Eyebrow (EB)', location: 'Pangkal alis mata (dekat hidung)', instruction: 'Ketuk di awal alis, di atas tulang orbital.', icon: '👁️', macroImage: require('./assets/seft_eyebrow_macro_detail.png') },
+  { id: 3, name: 'Side of Eye (SE)', location: 'Tulang di samping luar mata', instruction: 'Ketuk di tulang samping mata, bukan di pelipis.', icon: '👁️', macroImage: require('./assets/seft_side_eye_macro_zoomed.png') },
+  { id: 4, name: 'Under Eye (UE)', location: '2 cm di bawah mata, di tulang pipi', instruction: 'Ketuk di tulang di bawah mata, lurus dari pupil.', icon: '👁️', macroImage: require('./assets/seft_under_eye_macro_zoomed.png') },
+  { id: 5, name: 'Under Nose (UN)', location: 'Antara hidung dan bibir atas', instruction: 'Ketuk di titik tengah antara hidung dan bibir atas.', icon: '👃', macroImage: require('./assets/seft_under_nose_macro_zoomed.png') },
+  { id: 6, name: 'Chin (CH)', location: 'Lekukan antara dagu dan bibir bawah', instruction: 'Ketuk di cekungan di bawah bibir bawah.', icon: '👄', macroImage: require('./assets/seft_chin_macro_zoomed.png') },
+  { id: 7, name: 'Collarbone (CB)', location: 'Pertemuan tulang dada, selangka & rusuk pertama', instruction: 'Ketuk di titik pertemuan tulang dada & selangka, agak ke bawah.', icon: '🦴', macroImage: require('./assets/seft_collarbone_macro_zoomed.png') },
+  { id: 8, name: 'Under Arm (UA)', location: '10 cm di bawah ketiak (±setinggi puting pada pria)', instruction: 'Ketuk di sisi badan, sekitar 10 cm di bawah ketiak.', icon: '💪', macroImage: require('./assets/seft_under_arm_macro_zoomed.png') },
+  { id: 9, name: 'Gamut Spot', location: 'Punggung tangan, antara tulang jari manis & kelingking', instruction: 'Ketuk terus-menerus di titik ini selama 9 Gamut Procedure.', icon: '✊', macroImage: require('./assets/seft_gamut_spot_macro_zoomed.png') },
+  { id: 10, name: 'Inside Hand (IH)', location: 'Bagian dalam tangan / telapak tangan', instruction: 'Ketuk di bagian tengah telapak tangan.', icon: '🤲', macroImage: require('./assets/seft_inside_hand_macro_zoomed.png') },
+  { id: 11, name: 'Thumb (TH)', location: 'Sisi luar kuku ibu jari', instruction: 'Ketuk di samping kuku ibu jari, sisi yang menghadap telunjuk.', icon: '👍', macroImage: require('./assets/seft_thumb_macro_zoomed.png') },
+  { id: 12, name: 'Index Finger (IF)', location: 'Sisi luar kuku telunjuk', instruction: 'Ketuk di samping kuku telunjuk, sisi menghadap ibu jari.', icon: '☝️', macroImage: require('./assets/seft_index_finger_macro_zoomed.png') },
+  { id: 13, name: 'Middle Finger (MF)', location: 'Sisi luar kuku jari tengah', instruction: 'Ketuk di samping kuku jari tengah.', icon: '🖐️', macroImage: require('./assets/seft_middle_finger_macro_zoomed.png') },
+  { id: 14, name: 'Ring Finger (RF)', location: 'Sisi luar kuku jari manis', instruction: 'Ketuk di samping kuku jari manis.', icon: '🖐️', macroImage: require('./assets/seft_ring_finger_macro_zoomed.png') },
+  { id: 15, name: 'Baby Finger (BF)', location: 'Sisi luar kuku kelingking', instruction: 'Ketuk di samping kuku kelingking.', icon: '🖐️', macroImage: require('./assets/seft_baby_finger_macro_zoomed.png') },
+  { id: 16, name: 'Karate Chop (KC)', location: 'Sisi luar telapak tangan (untuk memotong)', instruction: 'Ketuk sisi telapak tangan yang digunakan untuk karate chop.', icon: '🤚', macroImage: require('./assets/seft_karate_chop_macro_zoomed.png') },
+  { id: 17, name: 'Sore Spot', location: 'Dada atas kiri/kanan yang terasa nyeri jika ditekan', instruction: 'Usap melingkar (bukan ketuk) di area ini sambil ucapkan set-up.', icon: '💗', macroImage: require('./assets/seft_sore_spot_macro_zoomed.png') },
+  { id: 18, name: 'Liver Point (LP)', location: 'Di bawah dada kanan, 2 rusuk di bawah puting', instruction: 'Ketuk ringan di area ini.', icon: '🫁', macroImage: require('./assets/seft_liver_point_macro_zoomed.png') },
 ];
 
 const SEFT_9_GAMUT = [
@@ -236,66 +238,65 @@ const SEFT_PROBLEMS = [
 const DISEASE_ACUPRESSURE = [
   { id: 'headache', icon: '🤯', name: 'Sakit Kepala & Migrain', desc: 'Nyeri kepala tegang, migrain, pusing',
     points: [
-      { name: 'LI4 (Hegu)', location: 'Antara ibu jari & telunjuk', technique: 'Tekan kuat, pijat melingkar 2 menit per tangan. UTAMA untuk sakit kepala.', duration: 120 },
-      { name: 'GB20 (Fengchi)', location: 'Dasar tengkorak, cekungan samping leher', technique: 'Tekan kedua titik dengan ibu jari ke atas & ke dalam. Tahan 2 menit.', duration: 120 },
-      { name: 'Yintang', location: 'Antara kedua alis', technique: 'Tekan ringan dengan jari tengah. Tutup mata. Bernapas dalam.', duration: 90 },
-      { name: 'GB21 (Jianjing)', location: 'Puncak bahu, tengah antara leher & ujung bahu', technique: 'Cubit otot bahu. Lepaskan ketegangan. Jangan pada ibu hamil.', duration: 90 },
+      { name: 'LI4 (Hegu)', location: 'Antara ibu jari & telunjuk', technique: 'Tekan kuat, pijat melingkar 2 menit per tangan. UTAMA untuk sakit kepala.', duration: 120, macroImage: require('./assets/acu_li4_hegu_macro.png') },
+      { name: 'GB20 (Fengchi)', location: 'Dasar tengkorak, cekungan samping leher', technique: 'Tekan kedua titik dengan ibu jari ke atas & ke dalam. Tahan 2 menit.', duration: 120, macroImage: require('./assets/acu_gb20_fengchi_macro.png') },
+      { name: 'Yintang', location: 'Antara kedua alis', technique: 'Tekan ringan dengan jari tengah. Tutup mata. Bernapas dalam.', duration: 90, macroImage: require('./assets/acu_yintang_macro_zoomed.png') },
+      { name: 'GB21 (Jianjing)', location: 'Puncak bahu, tengah antara leher & ujung bahu', technique: 'Cubit otot bahu. Lepaskan ketegangan. Jangan pada ibu hamil.', duration: 90, macroImage: require('./assets/acu_gb21_jianjing_macro.png') },
     ], totalDuration: '8-10 menit', evidence: 'Meta-analisis BMJ 2017: akupresur efektif mengurangi intensitas sakit kepala 30-50%.' },
   { id: 'insomnia', icon: '😴', name: 'Insomnia & Gangguan Tidur', desc: 'Sulit tidur, sering terbangun, tidur tidak nyenyak',
     points: [
-      { name: 'HT7 (Shenmen)', location: 'Sisi kelingking pergelangan tangan', technique: 'Tekan ringan, rasakan denyut. "Gerbang Roh" — titik penenang jiwa. 2 menit per tangan.', duration: 120 },
-      { name: 'Yintang', location: 'Antara kedua alis', technique: 'Tekan ringan, tutup mata, fokus pada kegelapan di balik kelopak. 2 menit.', duration: 120 },
-      { name: 'An Mian', location: 'Belakang daun telinga, cekungan di dasar tengkorak', technique: 'Tekan ringan kedua sisi. "Tidur Tenang" — nama titik ini. 2 menit.', duration: 120 },
-      { name: 'KD1 (Yongquan)', location: 'Cekungan telapak kaki depan', technique: 'Pijat kuat melingkar. Tarik energi ke bawah = tidur lebih mudah. 2 menit per kaki.', duration: 120 },
-      { name: 'SP6 (Sanyinjiao)', location: '4 jari di atas mata kaki dalam', technique: 'Tekan kuat di belakang tulang kering. Bukan untuk ibu hamil! 1 menit per kaki.', duration: 60 },
+      { name: 'HT7 (Shenmen)', location: 'Sisi kelingking pergelangan tangan', technique: 'Tekan ringan, rasakan denyut. "Gerbang Roh" — titik penenang jiwa. 2 menit per tangan.', duration: 120, macroImage: require('./assets/acu_ht7_shenmen_macro.png') },
+      { name: 'Yintang', location: 'Antara kedua alis', technique: 'Tekan ringan, tutup mata, fokus pada kegelapan di balik kelopak. 2 menit.', duration: 120, macroImage: require('./assets/acu_yintang_macro_zoomed.png') },
+      { name: 'An Mian', location: 'Belakang daun telinga, cekungan di dasar tengkorak', technique: 'Tekan ringan kedua sisi. "Tidur Tenang" — nama titik ini. 2 menit.', duration: 120, macroImage: require('./assets/acu_an_mian_macro.png') },
+      { name: 'KD1 (Yongquan)', location: 'Cekungan telapak kaki depan', technique: 'Pijat kuat melingkar. Tarik energi ke bawah = tidur lebih mudah. 2 menit per kaki.', duration: 120, macroImage: require('./assets/acu_kd1_yongquan_macro.png') },
+      { name: 'SP6 (Sanyinjiao)', location: '4 jari di atas mata kaki dalam', technique: 'Tekan kuat di belakang tulang kering. Bukan untuk ibu hamil! 1 menit per kaki.', duration: 60, macroImage: require('./assets/acu_sp6_sanyinjiao_macro.png') },
     ], totalDuration: '10-12 menit', evidence: 'Studi J Clinical Nursing 2019: akupresur meningkatkan kualitas tidur setara dengan obat tidur ringan.' },
   { id: 'anxiety', icon: '😰', name: 'Kecemasan & Stres', desc: 'Cemas berlebihan, gelisah, panik, overthinking',
     points: [
-      { name: 'PC6 (Neiguan)', location: '3 jari di atas pergelangan tangan dalam', technique: 'Tekan di antara 2 tendon. "Inner Gate" — gerbang ketenangan. 2 menit per tangan.', duration: 120 },
-      { name: 'HT7 (Shenmen)', location: 'Sisi kelingking pergelangan tangan', technique: 'Tekan lembut, bernapas pelan. Menenangkan jantung & pikiran. 2 menit.', duration: 120 },
-      { name: 'Yintang', location: 'Antara kedua alis ("Mata Ketiga")', technique: 'Tekan ringan, tutup mata. Bayangkan cahaya biru menenangkan. 2 menit.', duration: 120 },
-      { name: 'GV20 (Baihui)', location: 'Puncak kepala', technique: 'Tekan ringan. "Seratus Pertemuan" — menyeimbangkan semua meridian. 1 menit.', duration: 60 },
-      { name: 'LV3 (Taichong)', location: 'Punggung kaki, antara tulang jari 1 & 2', technique: 'Tekan kuat. Meredakan hati & emosi. 1 menit per kaki.', duration: 60 },
+      { name: 'PC6 (Neiguan)', location: '3 jari di atas pergelangan tangan dalam', technique: 'Tekan di antara 2 tendon. "Inner Gate" — gerbang ketenangan. 2 menit per tangan.', duration: 120, macroImage: require('./assets/acu_pc6_neiguan_macro.png') },
+      { name: 'HT7 (Shenmen)', location: 'Sisi kelingking pergelangan tangan', technique: 'Tekan lembut, bernapas pelan. Menenangkan jantung & pikiran. 2 menit.', duration: 120, macroImage: require('./assets/acu_ht7_shenmen_macro.png') },
+      { name: 'Yintang', location: 'Antara kedua alis ("Mata Ketiga")', technique: 'Tekan ringan, tutup mata. Bayangkan cahaya biru menenangkan. 2 menit.', duration: 120, macroImage: require('./assets/acu_yintang_macro_zoomed.png') },
+      { name: 'GV20 (Baihui)', location: 'Puncak kepala', technique: 'Tekan ringan. "Seratus Pertemuan" — menyeimbangkan semua meridian. 1 menit.', duration: 60, macroImage: require('./assets/acu_gv20_baihui_macro.png') },
+      { name: 'LV3 (Taichong)', location: 'Punggung kaki, antara tulang jari 1 & 2', technique: 'Tekan kuat. Meredakan hati & emosi. 1 menit per kaki.', duration: 60, macroImage: require('./assets/acu_lv3_taichong_macro.png') },
     ], totalDuration: '10 menit', evidence: 'RCT Frontiers in Psychology 2020: akupresur menurunkan skor kecemasan 40% pada mahasiswa.' },
   { id: 'backpain', icon: '🔙', name: 'Nyeri Punggung & Pinggang', desc: 'Nyeri punggung bawah, pinggang kaku, sciatica',
     points: [
-      { name: 'UB40 (Weizhong)', location: 'Tepat di tengah lipatan belakang lutut', technique: 'Tekan kuat saat duduk/berbaring. "Command Point" untuk punggung. 2 menit per kaki.', duration: 120 },
-      { name: 'UB23 (Shenshu)', location: 'Punggung bawah, 2 jari dari tulang belakang, setinggi pinggang', technique: 'Gunakan bola tenis di lantai: berbaring di atas bola, tekanan pada titik. 3 menit.', duration: 180 },
+      { name: 'UB40 (Weizhong)', location: 'Tepat di tengah lipatan belakang lutut', technique: 'Tekan kuat saat duduk/berbaring. "Command Point" untuk punggung. 2 menit per kaki.', duration: 120, macroImage: require('./assets/acu_ub40_weizhong_macro.png') },
+      { name: 'UB23 (Shenshu)', location: 'Punggung bawah, 2 jari dari tulang belakang, setinggi pinggang', technique: 'Gunakan bola tenis di lantai: berbaring di atas bola, tekanan pada titik. 3 menit.', duration: 180, macroImage: require('./assets/acu_ub23_shenshu_macro.png') },
       { name: 'GB30 (Huantiao)', location: 'Bokong, 1/3 jarak dari tulang ekor ke tulang pinggul', technique: 'Tekan kuat dengan kepalan/bola tenis. Efektif untuk sciatica. 2 menit per sisi.', duration: 120 },
-      { name: 'GV4 (Mingmen)', location: 'Tulang belakang setinggi pusar, di garis tengah', technique: 'Gosok kedua telapak tangan sampai panas, tempelkan di titik ini. 2 menit.', duration: 120 },
+      { name: 'GV4 (Mingmen)', location: 'Tulang belakang setinggi pusar, di garis tengah', technique: 'Gosok kedua telapak tangan sampai panas, tempelkan di titik ini. 2 menit.', duration: 120, macroImage: require('./assets/acu_gv4_mingmen_macro.png') },
     ], totalDuration: '10-12 menit', evidence: 'Cochrane Review 2019: akupresur efektif sebagai terapi tambahan untuk nyeri punggung kronis.' },
   { id: 'digestion', icon: '🤢', name: 'Gangguan Pencernaan', desc: 'Mual, kembung, sembelit, maag, diare',
     points: [
-      { name: 'ST36 (Zusanli)', location: '4 jari di bawah lutut, sisi luar tulang kering', technique: 'Tekan kuat, pijat melingkar. Titik #1 untuk SEMUA masalah pencernaan. 2 menit per kaki.', duration: 120 },
-      { name: 'PC6 (Neiguan)', location: '3 jari di atas pergelangan dalam', technique: 'Anti-mual paling efektif. Digunakan di rumah sakit post-operasi. 2 menit per tangan.', duration: 120 },
-      { name: 'CV12 (Zhongwan)', location: 'Garis tengah perut, tengah antara pusar & tulang dada', technique: 'Tekan ringan melingkar searah jarum jam. Jangan tekan keras! 2 menit.', duration: 120 },
-      { name: 'SP4 (Gongsun)', location: 'Sisi dalam kaki, di cekungan di bawah tulang metatarsal 1', technique: 'Tekan kuat dengan ibu jari. Mengatur limpa & lambung. 1 menit per kaki.', duration: 60 },
+      { name: 'ST36 (Zusanli)', location: '4 jari di bawah lutut, sisi luar tulang kering', technique: 'Tekan kuat, pijat melingkar. Titik #1 untuk SEMUA masalah pencernaan. 2 menit per kaki.', duration: 120, macroImage: require('./assets/acu_st36_zusanli_macro.png') },
+      { name: 'PC6 (Neiguan)', location: '3 jari di atas pergelangan dalam', technique: 'Anti-mual paling efektif. Digunakan di rumah sakit post-operasi. 2 menit per tangan.', duration: 120, macroImage: require('./assets/acu_pc6_neiguan_macro.png') },
+      { name: 'CV12 (Zhongwan)', location: 'Garis tengah perut, tengah antara pusar & tulang dada', technique: 'Tekan ringan melingkar searah jarum jam. Jangan tekan keras! 2 menit.', duration: 120, macroImage: require('./assets/acu_cv12_zhongwan_macro.png') },
+      { name: 'SP4 (Gongsun)', location: 'Sisi dalam kaki, di cekungan di bawah tulang metatarsal 1', technique: 'Tekan kuat dengan ibu jari. Mengatur limpa & lambung. 1 menit per kaki.', duration: 60, macroImage: require('./assets/acu_sp4_gongsun_macro.png') },
     ], totalDuration: '8-10 menit', evidence: 'Studi Acta Obstet Gynecol Scand: PC6 mengurangi mual 70% vs plasebo.' },
   { id: 'shoulder', icon: '💪', name: 'Nyeri Bahu & Leher', desc: 'Bahu kaku, leher tegang, frozen shoulder',
     points: [
       { name: 'GB21 (Jianjing)', location: 'Puncak bahu, tengah leher-bahu', technique: 'Cubit kuat otot trapezius 30 detik, lepas, ulangi 5x per sisi. JANGAN pada ibu hamil!', duration: 90 },
       { name: 'GB20 (Fengchi)', location: 'Dasar tengkorak, cekungan samping leher', technique: 'Tekan ke atas dengan ibu jari. Putar kepala pelan sambil ditekan. 2 menit.', duration: 120 },
-      { name: 'SI3 (Houxi)', location: 'Sisi luar tangan, di ujung lipatan saat mengepal', technique: 'Tekan kuat. Titik komando untuk leher & tulang belakang bagian atas. 1 menit per tangan.', duration: 60 },
-      { name: 'LI4 (Hegu)', location: 'Antara ibu jari & telunjuk', technique: 'Tekan kuat. Melancarkan Qi ke seluruh tubuh bagian atas. 2 menit per tangan.', duration: 120 },
+      { name: 'SI3 (Houxi)', location: 'Sisi luar tangan, di ujung lipatan saat mengepal', technique: 'Tekan kuat. Titik komando untuk leher & tulang belakang bagian atas. 1 menit per tangan.', duration: 60, macroImage: require('./assets/acu_si3_houxi_macro.png') },
+      { name: 'LI4 (Hegu)', location: 'Antara ibu jari & telunjuk', technique: 'Tekan kuat. Melancarkan Qi ke seluruh tubuh bagian atas. 2 menit per tangan.', duration: 120, macroImage: require('./assets/acu_li4_hegu_macro.png') },
     ], totalDuration: '8-10 menit', evidence: 'Studi Pain Medicine 2018: akupresur + stretching menurunkan nyeri bahu 55%.' },
   { id: 'menstrual', icon: '🩸', name: 'Nyeri Haid & Hormonal', desc: 'Kram menstruasi, PMS, ketidakteraturan siklus',
     points: [
-      { name: 'SP6 (Sanyinjiao)', location: '4 jari di atas mata kaki dalam', technique: 'Tekan kuat 2 menit per kaki. Titik pertemuan 3 meridian Yin — hormonal balance. JANGAN saat hamil!', duration: 120 },
-      { name: 'LV3 (Taichong)', location: 'Punggung kaki, antara tulang jari 1 & 2', technique: 'Tekan kuat. Melancarkan aliran Qi hati — mengatur emosi & hormon. 2 menit per kaki.', duration: 120 },
-      { name: 'CV4 (Guanyuan)', location: '4 jari di bawah pusar, garis tengah', technique: 'Letakkan telapak tangan yang sudah digosok hangat. Tekan ringan, napas dalam. 3 menit.', duration: 180 },
-      { name: 'ST36 (Zusanli)', location: '4 jari di bawah lutut, sisi luar', technique: 'Tekan kuat, pijat. Menguatkan energi & mengurangi kram. 1 menit per kaki.', duration: 60 },
+      { name: 'SP6 (Sanyinjiao)', location: '4 jari di atas mata kaki dalam', technique: 'Tekan kuat 2 menit per kaki. Titik pertemuan 3 meridian Yin — hormonal balance. JANGAN saat hamil!', duration: 120, macroImage: require('./assets/acu_sp6_sanyinjiao_macro.png') },
+      { name: 'LV3 (Taichong)', location: 'Punggung kaki, antara tulang jari 1 & 2', technique: 'Tekan kuat. Melancarkan aliran Qi hati — mengatur emosi & hormon. 2 menit per kaki.', duration: 120, macroImage: require('./assets/acu_lv3_taichong_macro.png') },
+      { name: 'CV4 (Guanyuan)', location: '4 jari di bawah pusar, garis tengah', technique: 'Letakkan telapak tangan yang sudah digosok hangat. Tekan ringan, napas dalam. 3 menit.', duration: 180, macroImage: require('./assets/acu_cv4_guanyuan_macro.png') },
+      { name: 'ST36 (Zusanli)', location: '4 jari di bawah lutut, sisi luar', technique: 'Tekan kuat, pijat. Menguatkan energi & mengurangi kram. 1 menit per kaki.', duration: 60, macroImage: require('./assets/acu_st36_zusanli_macro.png') },
     ], totalDuration: '10-12 menit', evidence: 'Studi J Obstet Gynecol 2019: akupresur SP6 mengurangi nyeri haid setara ibuprofen.' },
   { id: 'eyestrain', icon: '👀', name: 'Mata Lelah & Tegang', desc: 'Mata kering, silau, lelah akibat layar, mata kabur',
     points: [
-      { name: 'B2 (Zanzhu)', location: 'Cekungan di pangkal alis dekat hidung', technique: 'Tekan ke atas dengan ibu jari. "Drilling Bamboo" — titik utama mata. 1 menit.', duration: 60 },
-      { name: 'Yintang', location: 'Antara kedua alis', technique: 'Tekan ringan, tutup mata. Rilekskan otot mata. 1 menit.', duration: 60 },
-      { name: 'ST1 (Chengqi)', location: 'Tepat di bawah pupil, di tepi tulang orbital', technique: 'Tekan sangat ringan ke atas. Hati-hati — area sensitif! 30 detik per mata.', duration: 60 },
-      { name: 'GB20 (Fengchi)', location: 'Dasar tengkorak', technique: 'Tekan ke atas. Melancarkan aliran darah ke mata. 2 menit.', duration: 120 },
-      { name: 'LV3 (Taichong)', location: 'Punggung kaki', technique: 'Dalam TCM, mata diatur oleh meridian hati. Tekan untuk "bersihkan mata". 1 menit per kaki.', duration: 60 },
+      { name: 'B2 (Zanzhu)', location: 'Cekungan di pangkal alis dekat hidung', technique: 'Tekan ke atas dengan ibu jari. "Drilling Bamboo" — titik utama mata. 1 menit.', duration: 60, macroImage: require('./assets/acu_b2_zanzhu_macro.png') },
+      { name: 'Yintang', location: 'Antara kedua alis', technique: 'Tekan ringan, tutup mata. Rilekskan otot mata. 1 menit.', duration: 60, macroImage: require('./assets/acu_yintang_macro_zoomed.png') },
+      { name: 'ST1 (Chengqi)', location: 'Tepat di bawah pupil, di tepi tulang orbital', technique: 'Tekan sangat ringan ke atas. Hati-hati — area sensitif! 30 detik per mata.', duration: 60, macroImage: require('./assets/acu_st1_chengqi_macro.png') },
+      { name: 'GB20 (Fengchi)', location: 'Dasar tengkorak', technique: 'Tekan ke atas. Melancarkan aliran darah ke mata. 2 menit.', duration: 120, macroImage: require('./assets/acu_gb20_fengchi_macro.png') },
+      { name: 'LV3 (Taichong)', location: 'Punggung kaki', technique: 'Dalam TCM, mata diatur oleh meridian hati. Tekan untuk "bersihkan mata". 1 menit per kaki.', duration: 60, macroImage: require('./assets/acu_lv3_taichong_macro.png') },
     ], totalDuration: '6-8 menit', evidence: 'Studi JAMA Ophthalmology 2021: akupresur area orbital mengurangi kelelahan mata digital 45%.' },
   { id: 'flu', icon: '🤧', name: 'Flu, Pilek & Batuk', desc: 'Hidung mampet, bersin, batuk, tenggorokan sakit',
     points: [
-      { name: 'LI4 (Hegu)', location: 'Antara ibu jari & telunjuk', technique: 'Titik imunitas utama! Tekan kuat 2 menit per tangan.', duration: 120 },
       { name: 'LI20 (Yingxiang)', location: 'Samping cuping hidung', technique: 'Tekan kedua sisi hidung ke atas. Langsung membuka hidung mampet! 1 menit.', duration: 60 },
       { name: 'LU7 (Lieque)', location: '2 jari di atas pergelangan, sisi ibu jari', technique: 'Titik komando paru-paru. Tekan kuat, pijat. 1 menit per tangan.', duration: 60 },
       { name: 'GB20 (Fengchi)', location: 'Dasar tengkorak', technique: '"Wind Pool" — mengusir angin patogen. Tekan kuat ke atas. 2 menit.', duration: 120 },
@@ -318,7 +319,7 @@ const DISEASE_ACUPRESSURE = [
   { id: 'toothache', icon: '🦷', name: 'Sakit Gigi', desc: 'Nyeri gigi, gusi bengkak, sakit rahang',
     points: [
       { name: 'LI4 (Hegu)', location: 'Antara ibu jari & telunjuk', technique: 'Titik #1 untuk nyeri gigi! Tekan SANGAT kuat 2-3 menit. Sisi yang sama dengan gigi yang sakit.', duration: 180 },
-      { name: 'ST6 (Jiache)', location: 'Otot rahang — terasa mengeras saat menggigit', technique: 'Tekan otot masseter saat mulut rileks. Pijat melingkar. 1 menit per sisi.', duration: 60 },
+      { name: 'ST6 (Jiache)', location: 'Otot rahang — terasa mengeras saat menggigit', technique: 'Tekan otot masseter saat mulut rileks. Pijat melingkar. 1 menit per sisi.', duration: 60, macroImage: require('./assets/acu_st6_jiache_macro.png') },
       { name: 'ST44 (Neiting)', location: 'Antara jari kaki ke-2 & ke-3, di lipatan kulit', technique: 'Tekan kuat. Titik meridian lambung — efektif untuk nyeri gigi atas. 1 menit per kaki.', duration: 60 },
     ], totalDuration: '5-6 menit', evidence: 'Studi Anesth Prog 2019: akupresur LI4 mengurangi nyeri gigi 50% dalam 5 menit.' },
   { id: 'fatigue', icon: '😩', name: 'Kelelahan & Energi Rendah', desc: 'Lesu, lelah kronis, kurang semangat',
@@ -365,39 +366,83 @@ const CHAKRA_PRACTICES = {
 };
 
 // ============================================================
+// AI CONTEXT: Mapping tools for AI Suggestions
+// ============================================================
+const APP_TOOLS_DATA = [
+  { screen: 'breathing', params: { pattern: 'vagus' }, name: 'Napas Vagus', desc: 'Menenangkan sistem saraf & mengurangi kecemasan.' },
+  { screen: 'breathing', params: { pattern: '478' }, name: 'Napas 4-7-8', desc: 'Sangat efektif untuk membantu tidur cepat.' },
+  { screen: 'breathing', params: { pattern: 'box' }, name: 'Box Breathing', desc: 'Meningkatkan fokus & keseimbangan instan.' },
+  { screen: 'breathing', params: { pattern: 'wimhof' }, name: 'Wim Hof Style', desc: 'Meningkatkan energi & imunitas tubuh.' },
+  { screen: 'bodyscan', params: {}, name: 'Body Scan Meditation', desc: 'Relaksasi total seluruh tubuh & kesadaran.' },
+  { screen: 'routine', params: { routineId: 'morning-stretch' }, name: 'Morning Stretch', desc: 'Meningkatkan fleksibilitas & semangat pagi.' },
+  { screen: 'routine', params: { routineId: 'evening-yoga' }, name: 'Yoga Malam', desc: 'Melepas ketegangan otot sebelum tidur.' },
+  { screen: 'routine', params: { routineId: 'fascia-release' }, name: 'Fascia Release', desc: 'Melepas emosi tersimpan di jaringan ikat.' },
+  { screen: 'acupressure', params: { pointId: 'li4' }, name: 'Titik Hegu (LI4)', desc: 'Sakit kepala, stres, dan sistem imunitas.' },
+  { screen: 'acupressure', params: { pointId: 'pc6' }, name: 'Titik Neiguan (PC6)', desc: 'Mual, kecemasan, dan ketenangan jantung.' },
+  { screen: 'acupressure', params: { pointId: 'st36' }, name: 'Titik Zusanli (ST36)', desc: 'Energi, pencernaan, dan kesehatan jangka panjang.' },
+  { screen: 'acupressure', params: { pointId: 'gv20' }, name: 'Titik Baihui (GV20)', desc: 'Kejernihan mental dan fokus di puncak kepala.' },
+  { screen: 'seft', params: {}, name: 'SEFT Therapy', desc: 'Tapping meridian untuk masalah emosional berat.' },
+  { screen: 'diseaseAcu', params: {}, name: 'Menu Obati', desc: 'Daftar lengkap solusi akupresur untuk 15 penyakit.' },
+  { screen: 'fasting', params: {}, name: 'Fasting Timer', desc: 'Memonitor fase metabolisme & autophagy tubuh.' },
+  { screen: 'cold', params: {}, name: 'Cold Exposure', desc: 'Menurunkan inflamasi & meningkatkan dopamine.' },
+];
+
+// ============================================================
 // MAIN APP
 // ============================================================
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('home');
-  const [activeScreen, setActiveScreen] = useState(null);
-  const [screenParams, setScreenParams] = useState({});
+  const [navStack, setNavStack] = useState([]);
   const [aiConfig, setAiConfig] = useState({ provider: 'openrouter', model: 'openrouter/free', apiKey: '' });
+  const [userBio, setUserBio] = useState({ name: '', age: '', weight: '', height: '' });
+  const [isAiValidated, setIsAiValidated] = useState(false);
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const { width: sw } = useWindowDimensions();
   const isTab = sw >= 768;
 
+  const currentNav = navStack[navStack.length - 1] || null;
+  const activeScreen = currentNav?.screen;
+  const screenParams = currentNav?.params || {};
+
   useEffect(() => {
-    const loadConfig = async () => {
+    const loadData = async () => {
       try {
-        const saved = await AsyncStorage.getItem('yourbody_ai_config');
-        if (saved) setAiConfig(JSON.parse(saved));
+        const [savedAi, savedBio] = await Promise.all([
+          AsyncStorage.getItem('yourbody_ai_config'),
+          AsyncStorage.getItem('yourbody_user_bio')
+        ]);
+        if (savedAi) setAiConfig(JSON.parse(savedAi));
+        if (savedBio) setUserBio(JSON.parse(savedBio));
       } catch (e) {}
     };
-    loadConfig();
+    loadData();
   }, []);
 
   const navigate = useCallback((screen, params = {}) => {
     fadeAnim.setValue(0);
-    setActiveScreen(screen);
-    setScreenParams(params);
-    Animated.timing(fadeAnim, { toValue: 1, duration: 300, useNativeDriver: true }).start();
+    setNavStack(prev => [...prev, { screen, params }]);
+    Animated.timing(fadeAnim, { toValue: 1, duration: 300, useNativeDriver: Platform.OS !== 'web' }).start();
   }, [fadeAnim]);
 
   const goBack = useCallback(() => {
-    setActiveScreen(null);
-    setScreenParams({});
-  }, []);
+    fadeAnim.setValue(0);
+    setNavStack(prev => prev.slice(0, -1));
+    Animated.timing(fadeAnim, { toValue: 1, duration: 250, useNativeDriver: Platform.OS !== 'web' }).start();
+  }, [fadeAnim]);
+
+  // Handle Android Physical Back Button
+  useEffect(() => {
+    const onBackPress = () => {
+      if (navStack.length > 0) {
+        goBack();
+        return true;
+      }
+      return false;
+    };
+    const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+    return () => subscription.remove();
+  }, [navStack, goBack]);
 
   const renderContent = () => {
     if (activeScreen) {
@@ -412,6 +457,7 @@ export default function App() {
           {activeScreen === 'chakraQuiz' && <ChakraQuizTool goBack={goBack} navigate={navigate} />}
           {activeScreen === 'chakraPractice' && <ChakraPracticeTool chakra={screenParams.chakra} goBack={goBack} />}
           {activeScreen === 'fasting' && <FastingTool goBack={goBack} />}
+          {activeScreen === 'consultation' && <ConsultationTool goBack={goBack} navigate={navigate} aiConfig={aiConfig} userBio={userBio} isAiValidated={isAiValidated} />}
           {activeScreen === 'allBreathing' && <AllBreathingScreen goBack={goBack} navigate={navigate} />}
           {activeScreen === 'allAcupressure' && <AllAcupressureScreen goBack={goBack} navigate={navigate} />}
           {activeScreen === 'allRoutines' && <AllRoutinesScreen goBack={goBack} navigate={navigate} />}
@@ -423,14 +469,16 @@ export default function App() {
       );
     }
     switch (activeTab) {
-      case 'home': return <HomeScreen navigate={navigate} isTab={isTab} sw={sw} />;
+      case 'home': return <HomeScreen navigate={navigate} isTab={isTab} sw={sw} userBio={userBio} />;
       case 'practice': return <PracticeScreen navigate={navigate} isTab={isTab} sw={sw} />;
       case 'discover': return <DiscoverScreen navigate={navigate} isTab={isTab} sw={sw} />;
       case 'wisdom': return <WisdomScreen navigate={navigate} isTab={isTab} sw={sw} />;
-      case 'settings': return <SettingsScreen aiConfig={aiConfig} setAiConfig={setAiConfig} />;
+      case 'settings': return <SettingsScreen aiConfig={aiConfig} setAiConfig={setAiConfig} userBio={userBio} setUserBio={setUserBio} isAiValidated={isAiValidated} setIsAiValidated={setIsAiValidated} />;
       default: return <HomeScreen navigate={navigate} isTab={isTab} sw={sw} />;
     }
   };
+
+  if (!renderContent) return null; // Very basic safety
 
   return (
     <SafeAreaView style={st.container}>
@@ -445,7 +493,7 @@ export default function App() {
 // HOME SCREEN — What to do RIGHT NOW
 // ============================================================
 
-const HomeScreen = ({ navigate, isTab, sw }) => {
+const HomeScreen = ({ navigate, isTab, sw, userBio }) => {
   const [time, setTime] = useState(new Date());
   const [checkedActions, setCheckedActions] = useState({});
   const phase = useMemo(() => getTimePhase(), [time]);
@@ -472,8 +520,8 @@ const HomeScreen = ({ navigate, isTab, sw }) => {
   return (
     <ScrollView style={st.screen} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 20 }}>
       <View style={st.header}>
-        <Text style={st.greeting}>YOUR BODY</Text>
-        <Text style={st.appTitle}>Apa yang harus dilakukan sekarang?</Text>
+        <Text style={st.greeting}>HALO, {userBio.name ? userBio.name.toUpperCase() : 'YOUR BODY'}!</Text>
+        <Text style={st.appTitle}>Mau praktik apa hari ini?</Text>
       </View>
 
       {/* Current Phase */}
@@ -519,6 +567,7 @@ const HomeScreen = ({ navigate, isTab, sw }) => {
       {/* Quick Access */}
       <Text style={st.sectionTitle}>⚡ Akses Cepat</Text>
       <View style={st.quickGrid}>
+        <QuickBtn icon="💬" label="Tanya Tubuh" onPress={() => navigate('consultation')} />
         <QuickBtn icon="🫁" label="Napas" onPress={() => navigate('allBreathing')} />
         <QuickBtn icon="⏱️" label="Puasa" onPress={() => navigate('fasting')} />
         <QuickBtn icon="🙏" label="SEFT" onPress={() => navigate('seft')} />
@@ -892,7 +941,7 @@ const BodyScanTool = ({ goBack }) => {
       <Text style={st.screenTitle}>🧘 Body Scan</Text>
       <Text style={st.screenSub}>Meditasi pindai tubuh — perjalanan dari kaki ke kepala</Text>
 
-      <HeroImage source={require('./assets/body_scan_master.png')} />
+      <HeroImage source={require('./assets/body_scan_banner_premium.png')} />
 
       {stepIdx === -1 && (
         <TouchableOpacity style={st.startBtn} onPress={startScan} activeOpacity={0.7}>
@@ -903,6 +952,19 @@ const BodyScanTool = ({ goBack }) => {
       {step && running && (
         <View style={st.scanCard}>
           <Text style={st.scanStep}>{stepIdx + 1} / {BODY_SCAN_STEPS.length}</Text>
+          
+          {step.image && (
+            <View style={st.macroContainer}>
+              <Image source={step.image} style={st.macroImage} resizeMode="cover" />
+              <View style={[st.macroLabel, { backgroundColor: C.violet }]}><Text style={st.macroLabelText}>VISUALISASI AREA</Text></View>
+            </View>
+          )}
+
+          <View style={st.posisiBox}>
+            <Text style={st.posisiLabel}>📍 POSISI TUBUH:</Text>
+            <Text style={st.posisiText}>{step.posisi || 'Berbaring Rileks'}</Text>
+          </View>
+
           <Text style={st.scanArea}>{step.area}</Text>
           <Text style={st.scanInstruction}>{step.instruction}</Text>
           <View style={[st.scanTimer, { borderColor: C.violet }]}>
@@ -987,6 +1049,15 @@ const RoutineTool = ({ routineId, goBack }) => {
       {step && running && (
         <View style={st.routineActive}>
           <Text style={st.routineActiveStep}>{stepIdx + 1}/{routine.steps.length}</Text>
+          
+          {/* STEP POSITION IMAGE (Realistic) */}
+          {step.image && (
+            <View style={st.macroContainer}>
+              <Image source={step.image} style={st.macroImage} resizeMode="cover" />
+              <View style={[st.macroLabel, { backgroundColor: C.orange }]}><Text style={st.macroLabelText}>POSISI GERAKAN</Text></View>
+            </View>
+          )}
+
           <Text style={st.routineActiveName}>{step.name}</Text>
           <Text style={st.routineActiveInstruction}>{step.instruction}</Text>
           <View style={[st.scanTimer, { borderColor: C.orange }]}>
@@ -1034,9 +1105,21 @@ const AcupressureTool = ({ pointId, goBack, navigate }) => {
   return (
     <ScrollView style={st.screen} contentContainerStyle={{ alignItems: 'center', paddingBottom: 40 }}>
       <BackBtn onPress={() => { setRunning(false); goBack(); }} />
-      <Text style={{ fontSize: 56, textAlign: 'center', marginTop: 16 }}>{point.icon}</Text>
+      
+      {/* GLOBAL CONTEXT MAP (Fixed at top) */}
+      <HeroImage source={require('./assets/body_scan_master.png')} height={120} />
+
+      <Text style={{ fontSize: 44, marginTop: 12 }}>{point.icon}</Text>
       <Text style={st.screenTitle}>{point.name}</Text>
       <Text style={[st.screenSub, { textAlign: 'center' }]}>📍 {point.location}</Text>
+
+      {/* MACRO ZOOM DETAIL (Dynamic during session) */}
+      {point.macroImage && (
+        <View style={st.macroContainer}>
+          <Image source={point.macroImage} style={st.macroImage} resizeMode="cover" />
+          <View style={st.macroLabel}><Text style={st.macroLabelText}>ZOOM DETAIL</Text></View>
+        </View>
+      )}
 
       <View style={st.acuCard}>
         <Text style={st.acuBenefit}>🎯 Manfaat: {point.benefit}</Text>
@@ -1261,10 +1344,29 @@ const ChakraPracticeTool = ({ chakra, goBack }) => {
   );
 };
 
+const IF_PROTOCOLS = [
+  { id: '16-8', name: '16:8 (Beginner)', hours: 16, desc: 'Metode paling populer untuk manajemen berat badan & energi.' },
+  { id: '18-6', name: '18:6 (Intermediate)', hours: 18, desc: 'Meningkatkan ketosis & fokus mental lebih dalam.' },
+  { id: '20-4', name: '20:4 (Warrior)', hours: 20, desc: 'Pemicu autophagy & hormon pertumbuhan (HGH) yang kuat.' },
+  { id: 'omad', name: 'OMAD (Advanced)', hours: 23, desc: 'One Meal A Day. Regenerasi seluler intensif.' },
+  { id: 'custom', name: 'Custom (24h+)', hours: 24, desc: 'Untuk puasa panjang & pembersihan sel total.' },
+];
+
+const METABOLIC_PHASES = [
+  { h: 0, label: 'Fed State', desc: 'Tubuh memproses makanan. Pemuatan insulin.', color: C.amber },
+  { h: 4, label: 'Early Fasting', desc: 'Beralih menggunakan cadangan gula (Glikogen).', color: C.blue },
+  { h: 12, label: 'Fat Burning (Ketosis)', desc: 'Glikogen habis. Tubuh mulai membakar lemak menjadi badan keton.', color: C.emerald },
+  { h: 16, label: 'Autophagy Detect', desc: 'Sel mulai mendaur ulang komponen yang rusak & menua.', color: C.orange },
+  { h: 24, label: 'Deep Renewal', desc: 'Puncak autophagy & regenerasi sel punca dimulai.', color: C.gold },
+  { h: 48, label: 'Immune Reset', desc: 'Pembersihan sel imun lama & pembentukan sel baru.', color: C.violet },
+];
+
 // --- FASTING TIMER ---
 const FastingTool = ({ goBack }) => {
   const [startTime, setStartTime] = useState(null);
   const [elapsed, setElapsed] = useState(0);
+  const [method, setMethod] = useState(IF_PROTOCOLS[0]);
+
   useEffect(() => {
     let t;
     if (startTime) {
@@ -1273,26 +1375,15 @@ const FastingTool = ({ goBack }) => {
     return () => clearInterval(t);
   }, [startTime]);
 
-  const startFast = () => {
-    setStartTime(Date.now());
-  };
+  const startFast = () => setStartTime(Date.now());
+  const stopFast = () => { setStartTime(null); setElapsed(0); };
 
-  const stopFast = () => {
-    setStartTime(null); setElapsed(0);
-  };
+  const hours = elapsed / 3600;
+  const displayHours = Math.floor(hours);
+  const displayMins = Math.floor((elapsed % 3600) / 60);
 
-  const hours = Math.floor(elapsed / 3600);
-  const mins = Math.floor((elapsed % 3600) / 60);
-
-  const getPhase = () => {
-    if (hours < 8) return { label: 'Fed State', desc: 'Tubuh memproses makanan', color: C.amber, pct: (hours / 8) * 100 };
-    if (hours < 12) return { label: 'Glycogen Depletion', desc: 'Beralih ke pembakaran lemak', color: C.blue, pct: 40 + ((hours - 8) / 4) * 15 };
-    if (hours < 16) return { label: '✅ AUTOPHAGY AKTIF', desc: 'Sel membersihkan protein rusak!', color: C.emerald, pct: 55 + ((hours - 12) / 4) * 20 };
-    if (hours < 24) return { label: '🔥 Mitophagy Peak', desc: 'Mitokondria rusak didaur ulang!', color: C.orange, pct: 75 + ((hours - 16) / 8) * 15 };
-    return { label: '✨ Deep Renewal', desc: 'Regenerasi sel intensif + sel punca', color: C.gold, pct: 95 };
-  };
-
-  const phase = getPhase();
+  const currentPhase = [...METABOLIC_PHASES].reverse().find(p => hours >= p.h) || METABOLIC_PHASES[0];
+  const progress = Math.min((hours / method.hours) * 100, 100);
 
   return (
     <ScrollView style={st.screen} contentContainerStyle={{ alignItems: 'center', paddingBottom: 40 }}>
@@ -1300,34 +1391,57 @@ const FastingTool = ({ goBack }) => {
       <Text style={st.screenTitle}>⏱️ Fasting Timer</Text>
       <Text style={st.screenSub}>Lacak puasa & fase autophagy Anda</Text>
 
-      <HeroImage source={require('./assets/fasting_autophagy.png')} />
+      <HeroImage source={require('./assets/fasting_banner_premium.png')} />
 
       {!startTime ? (
-        <TouchableOpacity style={st.startBtn} onPress={startFast} activeOpacity={0.7}>
-          <Text style={st.startBtnText}>▶ Mulai Puasa Sekarang</Text>
-        </TouchableOpacity>
+        <View style={{ width: '100%' }}>
+          <Text style={st.sectionTitle}>Pilih Metode IF:</Text>
+          {IF_PROTOCOLS.map((p) => (
+            <TouchableOpacity key={p.id} 
+              style={[st.toolCard, { borderLeftColor: method.id === p.id ? C.cyan : C.b, borderLeftWidth: 4 }]}
+              onPress={() => setMethod(p)} activeOpacity={0.7}>
+              <View style={st.row}>
+                <Text style={[st.toolTitle, { flex: 1, color: method.id === p.id ? C.cyan : C.t1 }]}>{p.name}</Text>
+                {method.id === p.id && <Text style={{ color: C.cyan }}>✓</Text>}
+              </View>
+              <Text style={st.toolDesc}>{p.desc}</Text>
+            </TouchableOpacity>
+          ))}
+          <TouchableOpacity style={st.startBtn} onPress={startFast} activeOpacity={0.7}>
+            <Text style={st.startBtnText}>▶ Berangkat: {method.name}</Text>
+          </TouchableOpacity>
+        </View>
       ) : (
-        <>
-          <View style={[st.fastingCircle, { borderColor: phase.color }]}>
-            <Text style={[st.fastingTime, { color: phase.color }]}>{hours}h {mins}m</Text>
-            <Text style={[st.fastingPhase, { color: phase.color }]}>{phase.label}</Text>
-            <Text style={st.fastingDesc}>{phase.desc}</Text>
+        <View style={{ width: '100%', alignItems: 'center' }}>
+          
+          <View style={[st.fastingCircle, { borderColor: currentPhase.color }]}>
+            <Image source={require('./assets/autophagy_detail.png')} style={{ ...StyleSheet.absoluteFillObject, opacity: 0.15 }} />
+            <Text style={[st.fastingTime, { color: currentPhase.color }]}>{displayHours}j {displayMins}m</Text>
+            <Text style={[st.fastingPhase, { color: currentPhase.color }]}>{currentPhase.label}</Text>
           </View>
 
+          <View style={st.progressBox}>
+            <View style={st.row}>
+              <Text style={st.progressLabel}>Target: {method.hours} Jam</Text>
+              <Text style={[st.progressPct, { color: C.cyan }]}>{Math.round(progress)}%</Text>
+            </View>
+            <View style={st.progressBar}>
+              <View style={[st.progressFill, { width: `${progress}%`, backgroundColor: currentPhase.color }]} />
+            </View>
+          </View>
 
+          <View style={[st.card, { marginTop: 20, borderLeftColor: currentPhase.color, borderLeftWidth: 4 }]}>
+             <Text style={[st.toolTitle, { color: currentPhase.color }]}>🧬 Status Biologis: {currentPhase.label}</Text>
+             <Text style={st.toolDesc}>{currentPhase.desc}</Text>
+          </View>
 
           <View style={st.fastingPhases}>
-            {[
-              { h: '0-8h', label: 'Fed State', c: C.amber },
-              { h: '8-12h', label: 'Fat Burning', c: C.blue },
-              { h: '12-16h', label: 'Autophagy ✅', c: C.emerald },
-              { h: '16-24h', label: 'Mitophagy 🔥', c: C.orange },
-              { h: '24h+', label: 'Deep Renewal ✨', c: C.gold },
-            ].map((p, i) => (
-              <View key={i} style={[st.fastPhaseItem, hours >= parseInt(p.h) && { backgroundColor: p.c + '15' }]}>
-                <View style={[st.phaseDot, { backgroundColor: p.c }]} />
-                <Text style={st.fastPhaseH}>{p.h}</Text>
-                <Text style={[st.fastPhaseLabel, hours >= parseInt(p.h) && { color: p.c }]}>{p.label}</Text>
+            <Text style={st.label}>Timeline Mendatang:</Text>
+            {METABOLIC_PHASES.map((p, i) => (
+              <View key={i} style={[st.fastPhaseItem, hours >= p.h && { backgroundColor: p.color + '15' }]}>
+                <View style={[st.phaseDot, { backgroundColor: hours >= p.h ? p.color : C.b }]} />
+                <Text style={[st.fastPhaseH, { color: hours >= p.h ? C.t1 : C.t3 }]}>{p.h}j</Text>
+                <Text style={[st.fastPhaseLabel, { color: hours >= p.h ? p.color : C.t3, fontWeight: hours >= p.h ? '700' : '400' }]}>{p.label}</Text>
               </View>
             ))}
           </View>
@@ -1335,7 +1449,7 @@ const FastingTool = ({ goBack }) => {
           <TouchableOpacity style={[st.stopBtn]} onPress={stopFast} activeOpacity={0.7}>
             <Text style={st.stopBtnText}>⏹ Berhenti Puasa</Text>
           </TouchableOpacity>
-        </>
+        </View>
       )}
     </ScrollView>
   );
@@ -1405,6 +1519,8 @@ const SEFTSessionTool = ({ problem, goBack }) => {
         } else {
           setRunning(false);
           setPhase('tapping2');
+          setPointIdx(0); // Reset pointIdx for tapping2 phase
+          setCountdown(TAP_DURATION);
         }
       }
     }
@@ -1496,9 +1612,18 @@ const SEFTSessionTool = ({ problem, goBack }) => {
       {/* PHASE 3 & 5: TAPPING */}
       {(phase === 'tapping' || phase === 'tapping2') && running && (
         <View style={st.seftCard}>
-          <Text style={[st.scanArea, { color: C.violet }]}>{phase === 'tapping' ? '3. Tapping Ronde 1' : '5. Tapping Ronde 2'}</Text>
+          <Text style={[st.scanArea, { color: C.violet, marginBottom: 4 }]}>{phase === 'tapping' ? '3. Tapping Ronde 1' : '5. Tapping Ronde 2'}</Text>
           <Text style={st.scanStep}>{pointIdx + 1} / {tappingPoints.length}</Text>
-          <Text style={{ fontSize: 40, textAlign: 'center', marginBottom: 8 }}>{tappingPoints[pointIdx].icon}</Text>
+          
+          {/* MACRO ZOOM DETAIL */}
+          {tappingPoints[pointIdx].macroImage && (
+            <View style={[st.macroContainer, { marginTop: 0 }]}>
+              <Image source={tappingPoints[pointIdx].macroImage} style={st.macroImage} resizeMode="cover" />
+              <View style={[st.macroLabel, { backgroundColor: C.violet }]}><Text style={st.macroLabelText}>ZOOM DETAIL</Text></View>
+            </View>
+          )}
+
+          <Text style={{ fontSize: 40, textAlign: 'center', marginBottom: 8, marginTop: tappingPoints[pointIdx].macroImage ? 8 : 0 }}>{tappingPoints[pointIdx].icon}</Text>
           <Text style={[st.scanArea, { color: C.violet, fontSize: 18 }]}>{tappingPoints[pointIdx].name}</Text>
           <Text style={st.scanInstruction}>📍 {tappingPoints[pointIdx].location}</Text>
           <Text style={[st.scanInstruction, { fontWeight: '600', color: C.t1 }]}>{tappingPoints[pointIdx].instruction}</Text>
@@ -1506,7 +1631,6 @@ const SEFTSessionTool = ({ problem, goBack }) => {
           <View style={[st.scanTimer, { borderColor: C.violet }]}>
             <Text style={[st.scanTimerText, { color: C.violet }]}>{countdown}s</Text>
           </View>
-
         </View>
       )}
 
@@ -1672,7 +1796,16 @@ const DiseaseAcuDetailTool = ({ diseaseId, goBack }) => {
       {point && running && (
         <View style={st.seftCard}>
           <Text style={st.scanStep}>Titik {pointIdx + 1} / {disease.points.length}</Text>
-          <Text style={[st.scanArea, { color: C.rose }]}>{point.name}</Text>
+          <Text style={[st.scanArea, { color: C.rose, marginBottom: 2 }]}>{point.name}</Text>
+          
+          {/* MACRO ZOOM DETAIL (Dynamic during session) */}
+          {point.macroImage && (
+            <View style={st.macroContainer}>
+              <Image source={point.macroImage} style={st.macroImage} resizeMode="cover" />
+              <View style={[st.macroLabel, { backgroundColor: C.rose }]}><Text style={st.macroLabelText}>ZOOM DETAIL</Text></View>
+            </View>
+          )}
+
           <Text style={st.scanInstruction}>📍 {point.location}</Text>
           <Text style={[st.scanInstruction, { fontWeight: '600', color: C.t1, marginTop: 8 }]}>{point.technique}</Text>
           <View style={[st.scanTimer, { borderColor: C.rose, marginTop: 16 }]}>
@@ -1693,6 +1826,139 @@ const DiseaseAcuDetailTool = ({ diseaseId, goBack }) => {
           </TouchableOpacity>
         </View>
       )}
+    </ScrollView>
+  );
+};
+
+// --- AI CONSULTATION TOOL ---
+const ConsultationTool = ({ goBack, navigate, aiConfig, userBio, isAiValidated }) => {
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
+
+  const askAI = async () => {
+    if (!input.trim()) return;
+    if (!aiConfig.apiKey) {
+      Alert.alert('API Key Kosong', 'Atur API Key di Pengaturan untuk menggunakan fitur ini.');
+      return;
+    }
+
+    setLoading(true);
+    setResult(null);
+
+    try {
+      const provider = AI_PROVIDERS[aiConfig.provider];
+      const toolsStr = APP_TOOLS_DATA.map(t => `- ${t.name}: ${t.desc} (target: ${t.screen}, params: ${JSON.stringify(t.params)})`).join('\n');
+      
+      const systemPrompt = `Anda adalah asisten YourBody. Bantu pengguna mengatasi keluhan kesehatan dengan alat yang tersedia di aplikasi ini.
+DATA USER: Nama: ${userBio.name || 'User'}, Berat: ${userBio.weight}kg, Tinggi: ${userBio.height}cm.
+ALAT TERSEDIA:
+${toolsStr}
+
+Berikan respon JSON murni:
+{
+  "insight": "Penjelasan singkat & empatik (maks 2 kalimat).",
+  "recommendations": [
+    { "title": "Nama Tool", "desc": "Alasan singkat", "screen": "target_id", "params": {} }
+  ]
+}`;
+
+      const response = await fetch(`${provider.baseUrl}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${aiConfig.apiKey}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://yourbody.app',
+          'X-Title': 'YourBody AI'
+        },
+        body: JSON.stringify({
+          model: aiConfig.model,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: input }
+          ],
+          response_format: { type: 'json_object' }
+        })
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        const content = JSON.parse(data.choices[0].message.content);
+        setResult(content);
+      } else {
+        Alert.alert('Gagal', data.error?.message || 'Cek koneksi AI Anda.');
+      }
+    } catch (e) {
+      Alert.alert('Error', 'Terjadi kesalahan sistem.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <ScrollView style={st.screen} contentContainerStyle={{ paddingBottom: 60 }}>
+      <BackBtn onPress={goBack} />
+      <View style={st.row}>
+        <Text style={[st.screenTitle, { flex: 1 }]}>💬 Tanya Tubuh</Text>
+        <View style={{ backgroundColor: isAiValidated ? '#00ff8820' : '#ff4b2b20', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8, alignSelf: 'center', marginTop: 16 }}>
+           <Text style={{ fontSize: 10, fontWeight: '800', color: isAiValidated ? '#00ff88' : '#ff4b2b' }}>
+             {isAiValidated ? '🟢 TERHUBUNG' : '🔴 OFFLINE'}
+           </Text>
+        </View>
+      </View>
+      <Text style={st.screenSub}>Ceritakan keluhan Anda, AI akan menyarankan praktik yang sesuai.</Text>
+
+      <View style={st.card}>
+        <Text style={st.label}>Apa yang Anda rasakan sekarang?</Text>
+        <TextInput 
+          style={[st.input, { height: 100, textAlignVertical: 'top', paddingTop: 12 }]}
+          placeholder="Misal: Saya merasa pusing dan tegang di bahu setelah kerja seharian..."
+          placeholderTextColor={C.t3}
+          multiline
+          value={input}
+          onChangeText={setInput}
+        />
+        <TouchableOpacity 
+          style={[st.startBtn, { marginTop: 10, opacity: loading ? 0.6 : 1 }]} 
+          onPress={askAI}
+          disabled={loading}
+        >
+          <Text style={st.startBtnText}>{loading ? 'Menganalisis Tubuh...' : '✨ Analisis & Cari Solusi'}</Text>
+        </TouchableOpacity>
+      </View>
+
+      {loading && (
+        <View style={{ marginTop: 20, alignItems: 'center' }}>
+          <ActivityIndicator size="large" color={C.cyan} />
+          <Text style={[st.toolDesc, { marginTop: 10 }]}>Menghubungkan keluhan dengan jalur meridian & bio-hacking...</Text>
+        </View>
+      )}
+
+      {result && (
+        <Animated.View style={{ marginTop: 10 }}>
+          <View style={[st.card, { borderLeftColor: C.cyan, borderLeftWidth: 4 }]}>
+            <Text style={st.toolTitle}>💡 Analisis AI</Text>
+            <Text style={st.toolDesc}>{result.insight}</Text>
+          </View>
+
+          <Text style={st.sectionTitle}>🎯 Rekomendasi Praktik</Text>
+          {result.recommendations.map((rec, i) => (
+            <TouchableOpacity key={i} style={st.toolCard} onPress={() => navigate(rec.screen, rec.params)} activeOpacity={0.7}>
+              <View style={st.row}>
+                 <View style={{ flex: 1 }}>
+                    <Text style={[st.toolTitle, { color: C.cyan }]}>{rec.title}</Text>
+                    <Text style={st.toolDesc}>{rec.desc}</Text>
+                 </View>
+                 <Text style={[st.actionGo, { color: C.cyan }]}>MULAI →</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </Animated.View>
+      )}
+
+      <View style={[st.card, { backgroundColor: C.sl + '40', marginTop: 20 }]}>
+         <Text style={st.toolDesc}>• AI YourBody menggunakan context Bio Profil Anda untuk akurasi.{"\n"}• Tetap konsultasi ke dokter untuk kondisi medis darurat.</Text>
+      </View>
     </ScrollView>
   );
 };
@@ -1740,7 +2006,6 @@ const AllRoutinesScreen = ({ goBack, navigate }) => (
     <Text style={st.screenTitle}>🤸 Stretch & Movement</Text>
     
     <HeroImage source={require('./assets/yoga_banner.png')} height={140} />
-
     {Object.entries(STRETCH_ROUTINES).map(([key, r]) => (
       <TouchableOpacity key={key} style={[st.toolCard, { borderLeftColor: C.orange, borderLeftWidth: 4 }]}
         onPress={() => navigate('routine', { routineId: key })} activeOpacity={0.7}>
@@ -1770,66 +2035,123 @@ const HeroImage = ({ source, height = 180 }) => (
   </View>
 );
 
-const SettingsScreen = ({ aiConfig, setAiConfig }) => {
+const SettingsScreen = ({ aiConfig, setAiConfig, userBio, setUserBio, isAiValidated, setIsAiValidated }) => {
+  // AI State
   const [provider, setProvider] = useState(aiConfig.provider || 'openrouter');
   const [model, setModel] = useState(aiConfig.model || 'openrouter/free');
   const [apiKey, setApiKey] = useState(aiConfig.apiKey || '');
   const [testing, setTesting] = useState(false);
+  const [testStatus, setTestStatus] = useState(null);
 
-  const handleSave = async () => {
-    const newConfig = { provider, model, apiKey };
+  // Bio State
+  const [name, setName] = useState(userBio.name || '');
+  const [age, setAge] = useState(userBio.age || '');
+  const [weight, setWeight] = useState(userBio.weight || '');
+  const [height, setHeight] = useState(userBio.height || '');
+
+  const calculateHealth = () => {
+    const w = parseFloat(weight);
+    const h = parseFloat(height);
+    let bmi = null;
+    let water = null;
+    if (w && h) bmi = (w / ((h / 100) ** 2)).toFixed(1);
+    if (w) water = (w * 0.033).toFixed(1);
+    return { bmi, water };
+  };
+
+  const { bmi, water } = calculateHealth();
+  const bmiStatus = bmi ? (bmi < 18.5 ? { l: 'Kurus', c: C.blue } : bmi < 25 ? { l: 'Ideal', c: C.emerald } : bmi < 30 ? { l: 'Overweight', c: C.amber } : { l: 'Obesitas', c: C.rose }) : null;
+
+  const handleSaveAll = async () => {
+    const newAi = { provider, model, apiKey };
+    const newBio = { name, age, weight, height };
     try {
-      await AsyncStorage.setItem('yourbody_ai_config', JSON.stringify(newConfig));
-      setAiConfig(newConfig);
-      Alert.alert('Sukses', 'Pengaturan AI berhasil disimpan.');
+      await Promise.all([
+        AsyncStorage.setItem('yourbody_ai_config', JSON.stringify(newAi)),
+        AsyncStorage.setItem('yourbody_user_bio', JSON.stringify(newBio))
+      ]);
+      setAiConfig(newAi);
+      setUserBio(newBio);
+      Alert.alert('Sukses', 'Semua data berhasil disimpan!');
     } catch (e) {
-      Alert.alert('Error', 'Gagal menyimpan pengaturan.');
+      Alert.alert('Error', 'Gagal menyimpan data.');
     }
   };
 
   const testConnection = async () => {
     if (!apiKey) return Alert.alert('Peringatan', 'Masukkan API Key terlebih dahulu.');
-    setTesting(true);
-    setTestStatus(null);
+    setTesting(true); setTestStatus(null);
     try {
       const config = AI_PROVIDERS[provider];
       const response = await fetch(`${config.baseUrl}/chat/completions`, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': 'https://yourbody.app',
-          'X-Title': 'YourBody Health App'
-        },
-        body: JSON.stringify({
-          model: model,
-          messages: [{ role: 'user', content: 'Hi' }],
-          max_tokens: 5
-        })
+        headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model, messages: [{ role: 'user', content: 'Hi' }], max_tokens: 5 })
       });
-      
-      if (response.ok) {
-        setTestStatus('success');
-      } else {
-        setTestStatus('error');
-        const errorData = await response.json();
-        Alert.alert('Koneksi Gagal', errorData.error?.message || 'Cek kembali API Key Anda.');
+      const ok = response.ok;
+      setTestStatus(ok ? 'success' : 'error');
+      setIsAiValidated(ok);
+      if (!ok) {
+        const err = await response.json();
+        Alert.alert('Gagal', err.error?.message || 'Cek API Key.');
       }
-    } catch (e) {
-      setTestStatus('error');
-      Alert.alert('Error', 'Terjadi kesalahan jaringan.');
-    } finally {
-      setTesting(false);
-    }
+    } catch (e) { setTestStatus('error'); Alert.alert('Error', 'Jaringan bermasalah.'); }
+    finally { setTesting(false); }
   };
 
-  const [testStatus, setTestStatus] = useState(null);
-
   return (
-    <ScrollView style={st.screen} contentContainerStyle={{ paddingBottom: 100 }}>
-      <Text style={st.screenTitle}>⚙️ Pengaturan AI</Text>
-      <Text style={st.screenSub}>Hubungkan "Otak AI" untuk fitur konsultasi kesehatan personal.</Text>
+    <ScrollView style={st.screen} contentContainerStyle={{ paddingBottom: 120 }}>
+      <Text style={st.screenTitle}>⚙️ Pengaturan</Text>
+      <Text style={st.screenSub}>Kelola profil fisik & konfigurasi AI Anda.</Text>
 
+      {/* BIO PROFILE SECTION */}
+      <Text style={st.sectionTitle}>👤 Bio Profil</Text>
+      <View style={st.card}>
+        <View style={st.row}>
+           <View style={{ flex: 1, marginRight: 10 }}>
+              <Text style={st.label}>Nama Panggilan</Text>
+              <TextInput style={st.input} value={name} onChangeText={setName} placeholder="Budi..." placeholderTextColor={C.t3} />
+           </View>
+           <View style={{ width: 80 }}>
+              <Text style={st.label}>Umur</Text>
+              <TextInput style={st.input} value={age} onChangeText={setAge} keyboardType="numeric" placeholder="25" placeholderTextColor={C.t3} />
+           </View>
+        </View>
+
+        <View style={st.row}>
+           <View style={{ flex: 1, marginRight: 10 }}>
+              <Text style={st.label}>Berat (kg)</Text>
+              <TextInput style={st.input} value={weight} onChangeText={setWeight} keyboardType="numeric" placeholder="70" placeholderTextColor={C.t3} />
+           </View>
+           <View style={{ flex: 1 }}>
+              <Text style={st.label}>Tinggi (cm)</Text>
+              <TextInput style={st.input} value={height} onChangeText={setHeight} keyboardType="numeric" placeholder="170" placeholderTextColor={C.t3} />
+           </View>
+        </View>
+
+        {/* HEALTH METRICS PREVIEW */}
+        {(bmi || water) && (
+          <View style={[st.row, { marginTop: 10, gap: 10 }]}>
+            {bmi && (
+              <View style={[st.flex1, { backgroundColor: C.bg, padding: 12, borderRadius: 12, borderWidth: 1, borderColor: bmiStatus.c }]}>
+                <Text style={{ fontSize: 10, color: C.t3, fontWeight: '700' }}>BMI ANDA</Text>
+                <Text style={{ fontSize: 18, fontWeight: '800', color: bmiStatus.c }}>{bmi}</Text>
+                <Text style={{ fontSize: 11, color: bmiStatus.c, fontWeight: '600' }}>{bmiStatus.l}</Text>
+              </View>
+            )}
+            {water && (
+              <View style={[st.flex1, { backgroundColor: C.bg, padding: 12, borderRadius: 12, borderWidth: 1, borderColor: C.cyan }]}>
+                <Text style={{ fontSize: 10, color: C.t3, fontWeight: '700' }}>TARGET AIR</Text>
+                <Text style={{ fontSize: 18, fontWeight: '800', color: C.cyan }}>{water}L</Text>
+                <Text style={{ fontSize: 11, color: C.t2 }}>Harian</Text>
+              </View>
+            )}
+          </View>
+        )}
+      </View>
+
+      {/* AI SECTION */}
+      <Text style={st.sectionTitle}>🧠 Konfigurasi AI</Text>
       <View style={st.card}>
         <Text style={st.label}>AI Provider</Text>
         <View style={st.btnGroup}>
@@ -1873,12 +2195,23 @@ const SettingsScreen = ({ aiConfig, setAiConfig }) => {
         />
 
         <TouchableOpacity 
-          style={[st.testBtn, testing && { opacity: 0.6 }]} 
+          style={[st.testBtn, testing && { opacity: 0.6 }, testStatus === 'success' && st.testBtnSuccess, testStatus === 'error' && st.testBtnError]} 
           onPress={testConnection}
           disabled={testing}
         >
-          <Text style={st.testBtnText}>{testing ? 'Mengetes...' : '⚡ Test Koneksi AI'}</Text>
+          <Text style={[st.testBtnText, testStatus === 'success' && { color: '#00ff88' }, testStatus === 'error' && { color: '#ff4b2b' }]}>
+            {testing ? 'Mengetes...' : testStatus === 'success' ? '✅ Koneksi Terverifikasi' : testStatus === 'error' ? '❌ Koneksi Gagal' : '⚡ Test Koneksi AI'}
+          </Text>
         </TouchableOpacity>
+
+        {testStatus && (
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: -4, marginBottom: 16 }}>
+             <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: testStatus === 'success' ? '#00ff88' : '#ff4b2b', marginRight: 8 }} />
+             <Text style={{ fontSize: 12, fontWeight: '700', color: testStatus === 'success' ? '#00ff88' : '#ff4b2b' }}>
+               {testStatus === 'success' ? 'SISTEM SIAP DIGUNAKAN' : 'SISTEM OFFLINE'}
+             </Text>
+          </View>
+        )}
 
         <TouchableOpacity style={st.saveBtn} onPress={handleSave}>
           <Text style={st.saveBtnText}>💾 Simpan Pengaturan</Text>
@@ -2006,6 +2339,10 @@ const st = StyleSheet.create({
   scanTimerText: { fontSize: 24, fontWeight: '800' },
   scanDone: { width: '100%', backgroundColor: C.s, borderRadius: 20, padding: 24, alignItems: 'center', marginTop: 20 },
 
+  posisiBox: { flexDirection: 'row', alignItems: 'center', backgroundColor: C.sl, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 10, marginBottom: 16 },
+  posisiLabel: { fontSize: 10, fontWeight: '800', color: C.t3, marginRight: 8 },
+  posisiText: { fontSize: 12, fontWeight: '700', color: C.cyan },
+
   // Start/Stop Buttons
   startBtn: { backgroundColor: C.cyan + '20', borderRadius: 16, padding: 18, alignItems: 'center', width: '100%', marginTop: 20 },
   startBtnText: { fontSize: 16, fontWeight: '700', color: C.cyan },
@@ -2045,6 +2382,10 @@ const st = StyleSheet.create({
   fastPhaseItem: { flexDirection: 'row', alignItems: 'center', padding: 12, borderRadius: 10, marginBottom: 4 },
   fastPhaseH: { fontSize: 13, color: C.t3, width: 55 },
   fastPhaseLabel: { fontSize: 14, color: C.t2, fontWeight: '600' },
+
+  progressBox: { width: '100%', marginTop: 24, backgroundColor: C.s, borderRadius: 16, padding: 16 },
+  progressLabel: { fontSize: 12, fontWeight: '700', color: C.t2, flex: 1 },
+  progressPct: { fontSize: 13, fontWeight: '800' },
 
   // Chakra Quiz
   quizCard: { backgroundColor: C.s, borderRadius: 16, padding: 18, marginBottom: 10 },
@@ -2088,6 +2429,12 @@ const st = StyleSheet.create({
 
   // SEFT
   seftCard: { width: '100%', backgroundColor: C.s, borderRadius: 20, padding: 24, alignItems: 'center', marginTop: 12 },
+
+  // Macro Detail Global
+  macroContainer: { width: '100%', height: 220, borderRadius: 18, overflow: 'hidden', marginVertical: 16, backgroundColor: C.bg, borderWidth: 2, borderColor: C.b },
+  macroImage: { width: '100%', height: '100%' },
+  macroLabel: { position: 'absolute', top: 12, right: 12, backgroundColor: C.cyan, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8 },
+  macroLabelText: { fontSize: 9, fontWeight: '800', color: C.bg, letterSpacing: 1 },
 
   // Settings
   label: { fontSize: 13, color: C.t2, fontWeight: '700', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 1 },
