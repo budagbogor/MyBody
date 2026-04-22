@@ -2037,7 +2037,7 @@ const HeroImage = ({ source, height = 180 }) => (
 
 const SettingsScreen = ({ aiConfig, setAiConfig, userBio, setUserBio, isAiValidated, setIsAiValidated }) => {
   // AI State
-  const [provider, setProvider] = useState(aiConfig.provider || 'openrouter');
+  const [provider, setProvider] = useState(AI_PROVIDERS[aiConfig.provider] ? aiConfig.provider : 'openrouter');
   const [model, setModel] = useState(aiConfig.model || 'openrouter/free');
   const [apiKey, setApiKey] = useState(aiConfig.apiKey || '');
   const [testing, setTesting] = useState(false);
@@ -2173,7 +2173,7 @@ const SettingsScreen = ({ aiConfig, setAiConfig, userBio, setUserBio, isAiValida
 
         <Text style={[st.label, { marginTop: 20 }]}>Pilih Model</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 10 }}>
-          {AI_PROVIDERS[provider].models.map(m => (
+          {(AI_PROVIDERS[provider]?.models || []).map(m => (
             <TouchableOpacity 
               key={m} 
               style={[st.modelBadge, model === m && st.modelBadgeActive]}
@@ -2213,7 +2213,7 @@ const SettingsScreen = ({ aiConfig, setAiConfig, userBio, setUserBio, isAiValida
           </View>
         )}
 
-        <TouchableOpacity style={st.saveBtn} onPress={handleSave}>
+        <TouchableOpacity style={st.saveBtn} onPress={handleSaveAll}>
           <Text style={st.saveBtnText}>💾 Simpan Pengaturan</Text>
         </TouchableOpacity>
       </View>
